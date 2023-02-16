@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+
+from abc import abstractmethod
+from .._base import AbstractBase
+from .._structures import (
+    EvaluationPredictionInstance,
+    EvaluationReferenceInstance,
+    EvaluationOutput,
+)
+
+
+class Evaluator(AbstractBase):
+    @abstractmethod
+    def evaluate(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+        **kwargs
+    ) -> EvaluationOutput:
+        pass
+
+    def __call__(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+        **kwargs
+    ) -> EvaluationOutput:
+        return self.evaluate(predictions, references, **kwargs)
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
