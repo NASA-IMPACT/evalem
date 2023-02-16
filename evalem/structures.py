@@ -31,7 +31,7 @@ class ReferenceDTO(EvaluationDTO):
 
 
 PredictionInstance = Union[str, PredictionDTO, dict]
-ReferenceInstance = Union[str, PredictionDTO]
+ReferenceInstance = Union[str, ReferenceDTO]
 
 SinglePredictionInstance = List[PredictionInstance]
 MultiplePredictionInstance = List[List[PredictionInstance]]
