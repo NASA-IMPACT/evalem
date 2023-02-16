@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Union
 
@@ -11,7 +13,11 @@ class EvaluationDTO:
     """
 
     text: str
-    score: Optional[Union[float, int]] = None
+    score: float | int | None = None
+
+    @classmethod
+    def from_dict(cls, dct: dict) -> EvaluationDTO:
+        return cls(text=dct.get("text"), score=dct.get("score"))
 
 
 @dataclass(frozen=True)

@@ -15,8 +15,12 @@ class AbstractBase(ABC):
     def __call__(self, *args, **kwargs) -> Any:
         raise NotImplementedError()
 
+    @property
     def __classname__(self) -> str:
         return self.__class__.__name__
+
+    def __str__(self) -> str:
+        return f"[{self.__classname__}]"
 
 
 def main():
