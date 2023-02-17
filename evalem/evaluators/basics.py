@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-from jury import Jury
-
-from ._base import Evaluator, JuryBasedEvaluator
+from ._base import Evaluator
 
 
 class BasicEvaluator(Evaluator):
@@ -14,26 +12,6 @@ class BasicEvaluator(Evaluator):
     """
 
     pass
-
-
-class PrecisionEvaluator(JuryBasedEvaluator, BasicEvaluator):
-    def __init__(self) -> None:
-        super().__init__(metrics="precision")
-
-
-class RecallEvaluator(JuryBasedEvaluator, BasicEvaluator):
-    def __init__(self) -> None:
-        super().__init__(metrics="recall")
-
-
-class F1Evaluator(JuryBasedEvaluator, BasicEvaluator):
-    def __init__(self) -> None:
-        super().__init__(metrics="f1")
-
-
-class AccuracyEvaluator(JuryBasedEvaluator, BasicEvaluator):
-    def __init__(self) -> None:
-        super().__init__(metrics="accuracy")
 
 
 def main():

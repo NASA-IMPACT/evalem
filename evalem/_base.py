@@ -22,6 +22,9 @@ class AbstractBase(ABC):
     def __str__(self) -> str:
         return f"[{self.__classname__}]"
 
+    def __repr__(self) -> str:
+        return f"[{self.__classname__}]"
+
 
 def main():
     pass

@@ -23,6 +23,9 @@ class Metric(AbstractBase):
 
     Any downstream implementation of `Metric` should implement the
     `compute(...)` method.
+
+    > Note: An iterable of metric objects will be used for  `evaluators.Evaluator()`
+    component.
     """
 
     @abstractmethod
