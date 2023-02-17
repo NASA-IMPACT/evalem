@@ -2,10 +2,12 @@
 
 from typing import List, Union
 
-from ..structures import EvaluationDTO
+from ..structures import EvaluationDTO, PredictionInstance, ReferenceInstance
 
 
-def format_to_jury(instances: list) -> list:
+def format_to_jury(
+    instances: Union[PredictionInstance, ReferenceInstance],
+) -> Union[List[str], List[List[str]]]:
     if not instances:
         return []
 

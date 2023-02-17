@@ -2,13 +2,7 @@
 
 from jury import Jury
 
-from ._base import (
-    EvaluationOutput,
-    EvaluationPredictionInstance,
-    EvaluationReferenceInstance,
-    Evaluator,
-    JuryBasedEvaluator,
-)
+from ._base import Evaluator, JuryBasedEvaluator
 
 
 class BasicEvaluator(Evaluator):
