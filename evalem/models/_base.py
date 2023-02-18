@@ -16,6 +16,11 @@ class ModelWrapper(AbstractBase):
 
     All the downstream implementation of `ModelWrapper` should implement
     the `predict(...)` method.
+
+    Note:
+        In order to convert to task-specific downstream format, we provide
+        `_map_predictions(...)` method which user can override. By default,
+        it is an identity that doesn't change the format egested by the model.
     """
 
     def __init__(self, model, debug: bool = False, **kwargs) -> None:
@@ -28,6 +33,17 @@ class ModelWrapper(AbstractBase):
         inputs: Iterable,
         **kwargs,
     ) -> Iterable[EvaluationPredictionInstance]:
+        """
+        Entrypoint method for predicting using the wrapped model
+
+        Args:
+            ```inputs```
+                Represent input dataset whose format depends on
+                downstream tasks.
+
+        Returns:
+            Iterable of predicted instance
+        """
         raise NotImplementedError()
 
     def __call__(
@@ -56,7 +72,7 @@ class HFWrapper(ModelWrapper):
 
 class HFLMWrapper(HFWrapper):
     """
-    A wrapper for upstream HuggingFace model and corresponding tokenizer.
+    A wrapper for upstream HuggingFace Language Model and corresponding tokenizer.
     """
 
     def __init__(self, model, tokenizer) -> None:
@@ -71,10 +87,32 @@ class HFPipelineWrapper(HFWrapper):
 
     Args:
         ```pipeline```:
-            A HuggingFace pipeline object
+            A HuggingFace pipeline object used for prediction
+
+    See `evalem.models.defaults.DefaultQAModelWrapper` for a downstream
+    implementation.
+
+    Direct usage:
+
+        .. code-block: python
+
+            from transformers import pipeline as hf_pipeline
+            from evalem.models import HFPipelineWrapper
+
+            pipe = hf_pipeline("question-answering")
+            wrapped_model = HFPipelineWrapper(pipe)
+
+            # compute predictions
+            # (format?) and pass to evaluator along with references
+            predictions = wrapped_model.predict(<inputs>)
     """
 
     def __init__(self, pipeline, debug: bool = False) -> None:
+        """
+        Args:
+            ```pipeline```:
+                A HuggingFace pipeline object used for prediction
+        """
         super().__init__(pipeline)
 
     def predict(self, inputs, **kwargs):

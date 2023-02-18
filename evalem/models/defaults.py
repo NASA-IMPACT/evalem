@@ -9,13 +9,29 @@ from ._base import HFPipelineWrapper
 
 
 class DefaultQAModelWrapper(HFPipelineWrapper):
-    def __init__(self, debug: bool = False) -> None:
+    """
+    A default distill-bert-uncased base HF pipeline for
+    Question-Answering task.
+    """
+
+    def __init__(self) -> None:
         super().__init__(pipeline=hf_pipeline("question-answering"))
 
     def _map_predictions(
         self,
         predictions: Union[dict, List[dict]],
     ) -> Iterable[EvaluationPredictionInstance]:
+        """
+        This helper method converts the pipeline's default output format
+        to the iterable of QAPredictionDTO.
+
+        Args:
+            ```predictions```: ```Union[dict, List[dict]]```
+                Predictions provided by the QA pipeline.
+
+        Returns:
+            Converted format: ```Iterable[QAPredictionDTO]```
+        """
         if isinstance(predictions, dict):
             predictions = [predictions]
         return list(
