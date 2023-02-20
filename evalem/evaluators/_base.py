@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from abc import abstractmethod
 from typing import Iterable, Mapping, Type
 
 from .._base import AbstractBase
