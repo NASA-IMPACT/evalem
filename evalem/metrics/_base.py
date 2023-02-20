@@ -148,7 +148,7 @@ class JuryBasedMetric(Metric):
     ) -> MetricOutput:
         predictions = format_to_jury(predictions)
         references = format_to_jury(references)
-        return self.scorer(predictions=predictions, references=references)
+        return self.scorer(predictions=predictions, references=references, **kwargs)
 
 
 def main():
