@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from typing import Dict, Iterable, List, Union
+from typing import Iterable, List, Union
 
 from transformers import pipeline as hf_pipeline
 

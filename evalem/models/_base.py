@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from abc import abstractmethod
-from typing import Iterable
+from typing import Iterable, Type
 
-from transformers import pipeline as hf_pipeline
+from transformers.pipeline import Pipeline as HF_Pipeline
 
 from .._base import AbstractBase
 from ..structures import EvaluationPredictionInstance
@@ -107,7 +107,7 @@ class HFPipelineWrapper(HFWrapper):
             predictions = wrapped_model.predict(<inputs>)
     """
 
-    def __init__(self, pipeline, debug: bool = False) -> None:
+    def __init__(self, pipeline: Type[HF_Pipeline], debug: bool = False) -> None:
         """
         Args:
             ```pipeline```:
