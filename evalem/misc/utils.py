@@ -11,10 +11,18 @@ def format_to_jury(
     if not instances:
         return []
 
+    # If single DTO object, wrap into a list
     if isinstance(instances, EvaluationDTO):
-        instances = [instances]
+        return format_to_jury([instances])
+
+    # if single DTO as dict object, wrap a new DTO object into a list
     elif isinstance(instances, dict):
-        instances = [EvaluationDTO.from_dict(instances)]
+        return format_to_jury([EvaluationDTO.from_dict(instances)])
+
+    elif isinstance(instances, list) and isinstance(instances[0], dict):
+        return format_to_jury(
+            list(map(lambda x: EvaluationDTO.from_dict(x), instances)),
+        )
     elif isinstance(instances, list) and isinstance(instances[0], EvaluationDTO):
         return list(map(lambda x: x.text, instances))
     elif isinstance(instances, list) and isinstance(instances[0], list):
