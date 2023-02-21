@@ -19,7 +19,13 @@ setup(
     url="https://github.com/NASA-IMPACT/evalem",
     author_email="np0069@uah.edu",
     python_requires=">=3.8",
-    packages=["evalem"],
+    packages=[
+        "evalem",
+        "evalem.misc",
+        "evalem.models",
+        "evalem.evaluators",
+        "evalem.metrics",
+    ],
     install_requires=required,
     classifiers=[
         "Intended Audience :: Education",
