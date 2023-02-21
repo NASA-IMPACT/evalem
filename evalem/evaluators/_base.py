@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-from typing import Iterable, Mapping, Type
+from typing import Iterable, Mapping, Optional, Type, Union
 
 from .._base import AbstractBase
 from ..metrics import Metric
+from ..metrics.basics import AccuracyMetric
 from ..structures import (
     EvaluationOutput,
     EvaluationPredictionInstance,
@@ -25,6 +26,11 @@ class Evaluator(AbstractBase):
     These objects can be passed via:
         - constructor `Evaluator(metrics=[...])`
         - `add_metric(<metric_object>)`
+
+    Args:
+        ```metrics```: ```Optional[Iterable[Type[Metric]]]```
+            An iterable (list/set/tuple) of metric objects.
+            - If None, default `Evaluator.DEFAULT_METRIC_CLS` is used
 
     Direct usage:
             .. code-block: python
@@ -61,16 +67,52 @@ class Evaluator(AbstractBase):
                 result = evaluator(predictions=predictions, references=references)
     """
 
-    def __init__(self, metrics: Iterable[Type[Metric]], debug: bool = False) -> None:
+    # default is single accuracy metric
+    DEFAULT_METRIC_CLS = AccuracyMetric
+
+    def __init__(
+        self,
+        metrics: Optional[Iterable[Type[Metric]]] = None,
+        debug: bool = False,
+    ) -> None:
         super().__init__(debug)
-        self.metrics = list(metrics)
+
+        metrics = list(metrics or [Evaluator.DEFAULT_METRIC_CLS()])
+        self._type_check_metrics(metrics)
+        self.metrics = metrics
+
+    @staticmethod
+    def _type_check_metrics(
+        metrics: Union[Type[Metric], Iterable[Type[Metric]]],
+    ) -> bool:
+        """
+        Validates the type of metric list or just single metric object.
+
+        Args:
+            ```metrics``` : ```Union[Type[Metric], Iterable[Type[Metric]]]```
+                Input single `Metric` object or an iterable of objects
+
+        Returns:
+            Returns True if everything is okay. Otherwise throws a type error.
+
+        """
+        metrics = [metrics] if not isinstance(metrics, Iterable) else metrics
+        for _metric in metrics:
+            if not isinstance(_metric, Metric):
+                print(_metric)
+                raise TypeError(
+                    f"Invalid type for metric={_metric}. Expected type of [Metric]. Got {type(_metric)}",
+                )
+        return True
 
     def add_metric(self, metric: Type[Metric]) -> Type[Evaluator]:
+        """
+        A public interface to add metric to the existing list.
+        Uses the builder-pattern to add and build the object.
+        """
+        self._type_check_metrics(metric)
         self.metrics.append(metric)
         return self
-
-    def __getitem__(self, index):
-        return self.metrics[index]
 
     def evaluate(
         self,

@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from typing import Iterable, Type
 
-from transformers.pipeline import Pipeline as HF_Pipeline
+from transformers import Pipeline as HF_Pipeline
 
 from .._base import AbstractBase
 from ..structures import EvaluationPredictionInstance
