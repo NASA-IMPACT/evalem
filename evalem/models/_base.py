@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import Iterable, Type
 
 from transformers import Pipeline as HF_Pipeline
+from transformers import PreTrainedModel, PreTrainedTokenizerBase
 
 from .._base import AbstractBase
 from ..structures import EvaluationPredictionInstance
@@ -73,9 +74,19 @@ class HFWrapper(ModelWrapper):
 class HFLMWrapper(HFWrapper):
     """
     A wrapper for upstream HuggingFace Language Model and corresponding tokenizer.
+
+    Args:
+        ```model``` : ```Type[PreTrainedModel]```
+            HuggingFace pretrained language model
+        ```tokenizer```: ```Type[PreTrainedTokenizerBase]```
+            HuggingFace tokenizer
     """
 
-    def __init__(self, model, tokenizer) -> None:
+    def __init__(
+        self,
+        model: Type[PreTrainedModel],
+        tokenizer: Type[PreTrainedTokenizerBase],
+    ) -> None:
         super().__init__(model=model)
         self.tokenizer = tokenizer
 

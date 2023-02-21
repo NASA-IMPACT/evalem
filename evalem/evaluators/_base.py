@@ -36,10 +36,26 @@ class Evaluator(AbstractBase):
             .. code-block: python
 
                 from evalem.evaluators import Evaluator
+
+                # could be List of text
                 references = [
                     "Reference 1",
                     "Reference 2"
                 ]
+
+                # Or list of ReferenceDTO
+                references = [
+                    ReferenceDTO(text="Reference 1"),
+                    ReferenceDTO(text="Reference 2")
+                ]
+
+                # or list of dict
+                referencs = [
+                    dict(text="Reference 1"),
+                    dict(text="Reference 2"),
+                ]
+
+                # similarly for predictions
                 predictions = [
                     PredictionDTO(text="Reference 1", score=1.0),
                     PredictionDTO(text="Reference 2.5", score=0.75)

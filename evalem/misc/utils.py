@@ -10,7 +10,6 @@ def format_to_jury(
 ) -> Union[List[str], List[List[str]]]:
     if not instances:
         return []
-        # If single DTO object, wrap into a list
 
     if isinstance(instances, (EvaluationDTO, dict, str)):
         return format_to_jury([instances])
