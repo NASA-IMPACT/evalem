@@ -12,6 +12,21 @@ class DefaultQAModelWrapper(HFPipelineWrapper):
     """
     A default distill-bert-uncased base HF pipeline for
     Question-Answering task.
+
+    The predictor expects the input format to be a `List[dict]`, where each
+    dict has the following keys:
+        - `context` (str): Paragraph/context fromw which question is asked
+        - `question` (str): Actual question string being asked
+
+    Example input dict:
+            .. code-block: python
+
+                {
+                    "context": "There are 7 continents in the world."
+                    "question": "How many continents are there?"
+                }
+
+    The `predict(...)` method finally returns `List[QAPredictionDTO]` structure.
     """
 
     def __init__(self, device: str = "cpu") -> None:
