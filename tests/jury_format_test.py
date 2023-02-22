@@ -67,7 +67,7 @@ def test_multi_dicts():
     assert format_to_jury(References.Multi.DICTS) == References.Multi.STRS
 
 
-def test_multi_dots():
+def test_multi_dtos():
     assert format_to_jury(References.Multi.DTOS) == References.Multi.STRS
 
 
