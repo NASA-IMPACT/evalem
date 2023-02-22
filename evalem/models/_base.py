@@ -124,10 +124,14 @@ class HFPipelineWrapper(HFWrapper):
             ```pipeline```:
                 A HuggingFace pipeline object used for prediction
         """
-        super().__init__(pipeline)
+        super().__init__(model=pipeline)
 
     def predict(self, inputs, **kwargs):
         return self._map_predictions(self.model(inputs))
+
+    @property
+    def pipeline(self) -> HF_Pipeline:
+        return self.model
 
 
 def main():

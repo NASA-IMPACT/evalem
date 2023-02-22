@@ -14,8 +14,8 @@ class DefaultQAModelWrapper(HFPipelineWrapper):
     Question-Answering task.
     """
 
-    def __init__(self) -> None:
-        super().__init__(pipeline=hf_pipeline("question-answering"))
+    def __init__(self, device: str = "cpu") -> None:
+        super().__init__(pipeline=hf_pipeline("question-answering", device=device))
 
     def _map_predictions(
         self,
@@ -34,6 +34,8 @@ class DefaultQAModelWrapper(HFPipelineWrapper):
         """
         if isinstance(predictions, dict):
             predictions = [predictions]
+
+        # Note: Default model here is guaranteed to have these keys.
         return list(
             map(
                 lambda p: QAPredictionDTO(
