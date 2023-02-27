@@ -1,43 +1,51 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, List, Union
+from typing import Iterable, List, Optional, Union
 
 from transformers import pipeline as hf_pipeline
 
-from ..structures import EvaluationPredictionInstance, QAPredictionDTO
-from ._base import HFPipelineWrapper
+from ..structures import QAPredictionDTO
+from ._base import HFPipelineWrapper, PreTrainedModel, PreTrainedTokenizerBase
 
 
-class DefaultQAModelWrapper(HFPipelineWrapper):
+class HFPipelineWrapperForQuestionAnswering(HFPipelineWrapper):
     """
-    A default distill-bert-uncased base HF pipeline for
-    Question-Answering task.
+    A HFPipelineWrapper for question-answering.
 
-    The predictor expects the input format to be a `List[dict]`, where each
-    dict has the following keys:
-        - `context` (str): Paragraph/context fromw which question is asked
-        - `question` (str): Actual question string being asked
-
-    Example input dict:
-            .. code-block: python
-
-                {
-                    "context": "There are 7 continents in the world."
-                    "question": "How many continents are there?"
-                }
-
-    The `predict(...)` method finally returns `List[QAPredictionDTO]` structure.
+    Args:
+        ```model```: ```Type[PreTrainedModel]```
+            Which model to use?
+        ```tokenizer```: ```Type[PreTrainedTokenizerBase]```
+            Which tokenizer to use?
+        ```device```:```str```
+            Which device to run the model on? cpu? gpu? mps?
     """
 
-    def __init__(self, device: str = "cpu") -> None:
-        super().__init__(pipeline=hf_pipeline("question-answering", device=device))
+    def __init__(
+        self,
+        model: Optional[
+            Union[str, PreTrainedModel]
+        ] = "distilbert-base-cased-distilled-squad",
+        tokenizer: Optional[
+            Union[str, PreTrainedTokenizerBase]
+        ] = "distilbert-base-cased-distilled-squad",
+        device: str = "cpu",
+    ) -> None:
+        super().__init__(
+            pipeline=hf_pipeline(
+                "question-answering",
+                model=model,
+                tokenizer=tokenizer,
+                device=device,
+            ),
+        )
 
-    def _map_predictions(
+    def _postprocess_predictions(
         self,
         predictions: Union[dict, List[dict]],
-    ) -> Iterable[EvaluationPredictionInstance]:
+    ) -> Iterable[QAPredictionDTO]:
         """
-        This helper method converts the pipeline's default output format
+        This method converts the pipeline's default output format
         to the iterable of QAPredictionDTO.
 
         Args:
@@ -61,6 +69,17 @@ class DefaultQAModelWrapper(HFPipelineWrapper):
                 ),
                 predictions,
             ),
+        )
+
+
+class DefaultQAModelWrapper(HFPipelineWrapper):
+    """
+    Deprecated: Use `HFPipelineWrapperForQuestionAnswering()`
+    """
+
+    def __init__(self, device: str = "cpu") -> None:
+        raise DeprecationWarning(
+            "Deprecated ModelWrapper. Please use `HFPipelineWrapperForQuestionAnswering`",
         )
 
 
