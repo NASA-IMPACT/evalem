@@ -170,6 +170,14 @@ class HFPipelineWrapper(HFWrapper):
             pipe = hf_pipeline("question-answering")
             wrapped_model = HFPipelineWrapper(pipe)
 
+            # Or: if you want to specify how to post-process predictions,
+            # provide the processor explicitly.
+            wrapped_model = HFPipelineWrapper(
+                pipeline("question-answering", model="deepset/roberta-base-squad2"),
+                predictions_postprocessor=lambda xs: list(map(lambda x: x["answer"], xs))
+            )
+
+
             # compute predictions
             # (format?) and pass to evaluator along with references
             predictions = wrapped_model.predict(<inputs>)
