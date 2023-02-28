@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 
-from ..metrics import AccuracyMetric, ExactMatchMetric, F1Metric
+from ..metrics import (
+    AccuracyMetric,
+    ConfusionMatrix,
+    ExactMatchMetric,
+    F1Metric,
+    PrecisionMetric,
+    RecallMetric,
+)
 from ._base import Evaluator
 
 
@@ -26,6 +33,23 @@ class QAEvaluator(BasicEvaluator):
                 AccuracyMetric(),
                 ExactMatchMetric(),
                 F1Metric(),
+            ],
+        )
+
+
+class TextClassificationEvaluator(BasicEvaluator):
+    """
+    An evaluator for text classification tasks.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(
+            metrics=[
+                AccuracyMetric(),
+                F1Metric(),
+                PrecisionMetric(),
+                RecallMetric(),
+                ConfusionMatrix(),
             ],
         )
 
