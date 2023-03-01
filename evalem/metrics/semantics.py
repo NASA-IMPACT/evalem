@@ -37,6 +37,9 @@ class BertScore(SemanticMetric):
             https://github.com/Tiiiger/bert_score/blob/master/bert_score/utils.py
         ```device```: ```str```
             Which device to run the model on? Defaults to "cpu".
+        ```per_instance_score```: ```bool```
+            If enabled, precision, recall and f1 score per instance is also
+            returned in the computation result.
         ```debug```: ```bool```
             Enable debugging log? Defaults to False.
 
@@ -70,10 +73,12 @@ class BertScore(SemanticMetric):
         self,
         model_type: str = "roberta-large",
         device: str = "cpu",
+        per_instance_score: bool = False,
         debug: bool = False,
     ) -> None:
         super().__init__(metrics="bertscore", device=device, debug=debug)
         self.model_type = model_type
+        self.per_instance_score = per_instance_score
 
     def compute(
         self,
@@ -83,13 +88,18 @@ class BertScore(SemanticMetric):
     ) -> MetricOutput:
         device = kwargs.pop("device", self.device)
         model_type = kwargs.pop("model_type", self.model_type)
-        return super().compute(
+        result = super().compute(
             predictions=predictions,
             references=references,
             model_type=model_type,
             device=device,
             **kwargs,
         )
+        if not self.per_instance_score:
+            result["bertscore"].pop("precision", None)
+            result["bertscore"].pop("recall", None)
+            result["bertscore"].pop("f1", None)
+        return result
 
 
 class BartScore(SemanticMetric):
