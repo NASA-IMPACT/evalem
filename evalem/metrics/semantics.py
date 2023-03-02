@@ -71,7 +71,7 @@ class BertScore(SemanticMetric):
 
     def __init__(
         self,
-        model_type: str = "roberta-large",
+        model_type: str = "bert-base-uncased",
         device: str = "cpu",
         per_instance_score: bool = False,
         debug: bool = False,
