@@ -28,9 +28,7 @@ class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
         model: Optional[
             Union[str, PreTrainedModel]
         ] = "distilbert-base-cased-distilled-squad",
-        tokenizer: Optional[
-            Union[str, PreTrainedTokenizerBase]
-        ] = "distilbert-base-cased-distilled-squad",
+        tokenizer: Optional[Union[str, PreTrainedTokenizerBase]] = None,
         device: str = "cpu",
         hf_params: Optional[dict] = None,
         **kwargs,
@@ -110,9 +108,7 @@ class TextClassificationHFPipelineWrapper(HFPipelineWrapper):
         model: Optional[
             Union[str, PreTrainedModel]
         ] = "distilbert-base-uncased-finetuned-sst-2-english",
-        tokenizer: Optional[
-            Union[str, PreTrainedTokenizerBase]
-        ] = "distilbert-base-uncased-finetuned-sst-2-english",
+        tokenizer: Optional[Union[str, PreTrainedTokenizerBase]] = None,
         device: str = "cpu",
         hf_params: Optional[dict] = None,
         **kwargs,
