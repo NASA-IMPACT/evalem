@@ -6,6 +6,7 @@ import pytest
 from .fixtures import predictions, references
 
 
+@pytest.mark.metrics
 class BaseMetricTest:
     _metric_cls = None
     _key = None
