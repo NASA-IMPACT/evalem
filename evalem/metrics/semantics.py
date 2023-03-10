@@ -37,6 +37,10 @@ class BertScore(SemanticMetric):
             https://github.com/Tiiiger/bert_score/blob/master/bert_score/utils.py
         ```device```: ```str```
             Which device to run the model on? Defaults to "cpu".
+        ```per_instance_score```: ```bool```
+            If enabled, precision, recall and f1 score per instance is also
+            returned in the computation result.
+            Else: mean precision, recall and f1 is computed by default.
         ```debug```: ```bool```
             Enable debugging log? Defaults to False.
 
@@ -68,12 +72,14 @@ class BertScore(SemanticMetric):
 
     def __init__(
         self,
-        model_type: str = "roberta-large",
+        model_type: str = "bert-base-uncased",
         device: str = "cpu",
+        per_instance_score: bool = False,
         debug: bool = False,
     ) -> None:
         super().__init__(metrics="bertscore", device=device, debug=debug)
         self.model_type = model_type
+        self.per_instance_score = per_instance_score
 
     def compute(
         self,
@@ -83,13 +89,19 @@ class BertScore(SemanticMetric):
     ) -> MetricOutput:
         device = kwargs.pop("device", self.device)
         model_type = kwargs.pop("model_type", self.model_type)
-        return super().compute(
+        result = super().compute(
             predictions=predictions,
             references=references,
             model_type=model_type,
             device=device,
             **kwargs,
         )
+        # if you want to supress a list of all these metrics
+        # and want to just have mean/average.
+        if not self.per_instance_score:
+            for _key in ["precision", "recall", "f1"]:
+                result["bertscore"][_key] = np.mean(result["bertscore"][_key])
+        return result
 
 
 class BartScore(SemanticMetric):

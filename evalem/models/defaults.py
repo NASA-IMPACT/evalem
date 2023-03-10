@@ -1,43 +1,56 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, List, Union
+from typing import Iterable, List, Optional, Union
 
 from transformers import pipeline as hf_pipeline
 
-from ..structures import EvaluationPredictionInstance, QAPredictionDTO
-from ._base import HFPipelineWrapper
+from ..structures import PredictionDTO, QAPredictionDTO
+from ._base import HFPipelineWrapper, PreTrainedModel, PreTrainedTokenizerBase
 
 
-class DefaultQAModelWrapper(HFPipelineWrapper):
+class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
     """
-    A default distill-bert-uncased base HF pipeline for
-    Question-Answering task.
+    A HFPipelineWrapper for question-answering.
 
-    The predictor expects the input format to be a `List[dict]`, where each
-    dict has the following keys:
-        - `context` (str): Paragraph/context fromw which question is asked
-        - `question` (str): Actual question string being asked
-
-    Example input dict:
-            .. code-block: python
-
-                {
-                    "context": "There are 7 continents in the world."
-                    "question": "How many continents are there?"
-                }
-
-    The `predict(...)` method finally returns `List[QAPredictionDTO]` structure.
+    Args:
+        ```model```: ```Type[PreTrainedModel]```
+            Which model to use?
+        ```tokenizer```: ```Type[PreTrainedTokenizerBase]```
+            Which tokenizer to use?
+        ```device```:```str```
+            Which device to run the model on? cpu? gpu? mps?
     """
 
-    def __init__(self, device: str = "cpu") -> None:
-        super().__init__(pipeline=hf_pipeline("question-answering", device=device))
+    _task = "question-answering"
 
-    def _map_predictions(
+    def __init__(
+        self,
+        model: Optional[
+            Union[str, PreTrainedModel]
+        ] = "distilbert-base-cased-distilled-squad",
+        tokenizer: Optional[Union[str, PreTrainedTokenizerBase]] = None,
+        device: str = "cpu",
+        hf_params: Optional[dict] = None,
+        **kwargs,
+    ) -> None:
+        self.hf_params = hf_params or {}
+        super().__init__(
+            pipeline=hf_pipeline(
+                self._task,
+                model=model,
+                tokenizer=tokenizer,
+                device=device,
+                **self.hf_params,
+            ),
+            **kwargs,
+        )
+
+    def _postprocess_predictions(
         self,
         predictions: Union[dict, List[dict]],
-    ) -> Iterable[EvaluationPredictionInstance]:
+    ) -> Iterable[QAPredictionDTO]:
         """
-        This helper method converts the pipeline's default output format
+        This method converts the pipeline's default output format
         to the iterable of QAPredictionDTO.
 
         Args:
@@ -62,6 +75,86 @@ class DefaultQAModelWrapper(HFPipelineWrapper):
                 predictions,
             ),
         )
+
+
+class DefaultQAModelWrapper(HFPipelineWrapper):
+    """
+    Deprecated: Use `QuestionAnsweringHFPipelineWrapper()`
+    """
+
+    def __init__(self, device: str = "cpu") -> None:
+        raise DeprecationWarning(
+            "Deprecated ModelWrapper. Please use `QuestionAnsweringHFPipelineWrapper`",
+        )
+
+
+class TextClassificationHFPipelineWrapper(HFPipelineWrapper):
+    """
+    A HFPipelineWrapper for text classification.
+
+    Args:
+        ```model```: ```Type[PreTrainedModel]```
+            Which model to use?
+        ```tokenizer```: ```Type[PreTrainedTokenizerBase]```
+            Which tokenizer to use?
+        ```device```:```str```
+            Which device to run the model on? cpu? gpu? mps?
+    """
+
+    _task = "text-classification"
+
+    def __init__(
+        self,
+        model: Optional[
+            Union[str, PreTrainedModel]
+        ] = "distilbert-base-uncased-finetuned-sst-2-english",
+        tokenizer: Optional[Union[str, PreTrainedTokenizerBase]] = None,
+        device: str = "cpu",
+        hf_params: Optional[dict] = None,
+        **kwargs,
+    ) -> None:
+        self.hf_params = hf_params or {}
+        super().__init__(
+            pipeline=hf_pipeline(
+                self._task,
+                model=model,
+                tokenizer=tokenizer,
+                device=device,
+                **self.hf_params,
+            ),
+            **kwargs,
+        )
+        # mapping  from int code to actual label name.
+        self.label_map = kwargs.get("label_map", {})
+
+    def _postprocess_predictions(
+        self,
+        predictions: Union[dict, List[dict]],
+    ) -> Iterable[PredictionDTO]:
+        """
+        This method converts the pipeline's default output format
+        to the iterable of QAPredictionDTO.
+
+        Args:
+            ```predictions```: ```Union[dict, List[dict]]```
+                Predictions provided by the the classificaton pipeline.
+
+        Returns:
+            Converted format: ```Iterable[PredictionDTO]```
+        """
+        if isinstance(predictions, dict):
+            predictions = [predictions]
+
+        # Note: Default model here is guaranteed to have these keys.
+        # Use label mapping. If mapping doesn't exist, just use the prediction.
+        predictions = map(
+            lambda p: PredictionDTO(
+                text=self.label_map.get(p["label"], p["label"]),
+                score=p.get("score"),
+            ),
+            predictions,
+        )
+        return list(predictions)
 
 
 def main():
