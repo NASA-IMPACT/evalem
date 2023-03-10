@@ -5,12 +5,12 @@ from typing import List
 import pytest
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True, scope="module")
 def references() -> List[str]:
     return ["A", "B", "C", "D", "A"]
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True, scope="module")
 def predictions() -> List[str]:
     return ["A", "B", "C", "D", "B"]
 
