@@ -40,6 +40,7 @@ class BertScore(SemanticMetric):
         ```per_instance_score```: ```bool```
             If enabled, precision, recall and f1 score per instance is also
             returned in the computation result.
+            Else: mean precision, recall and f1 is computed by default.
         ```debug```: ```bool```
             Enable debugging log? Defaults to False.
 
@@ -95,10 +96,11 @@ class BertScore(SemanticMetric):
             device=device,
             **kwargs,
         )
+        # if you want to supress a list of all these metrics
+        # and want to just have mean/average.
         if not self.per_instance_score:
-            result["bertscore"].pop("precision", None)
-            result["bertscore"].pop("recall", None)
-            result["bertscore"].pop("f1", None)
+            for _key in ["precision", "recall", "f1"]:
+                result["bertscore"][_key] = np.mean(result["bertscore"][_key])
         return result
 
 

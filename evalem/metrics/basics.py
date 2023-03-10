@@ -101,11 +101,3 @@ class ConfusionMatrix(BasicMetric):
         Get unique list of labels across predictions + references.
         """
         return sorted(set(predictions).union(references))
-
-
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
