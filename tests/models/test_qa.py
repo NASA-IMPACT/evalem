@@ -10,6 +10,7 @@ from evalem.structures import QAPredictionDTO
 from .fixtures import squad_v2_data
 
 
+@pytest.mark.models
 class TestDefaultQAWrapper:
     @pytest.fixture(autouse=True, scope="class")
     def inputs(self, squad_v2_data):
