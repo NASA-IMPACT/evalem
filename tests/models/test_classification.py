@@ -11,6 +11,7 @@ from evalem.structures import PredictionDTO
 from .fixtures import imdb_data
 
 
+@pytest.mark.dependency
 @pytest.mark.models
 class TestDefaultTextClassificationWrapper:
     @pytest.fixture(autouse=True, scope="class")
