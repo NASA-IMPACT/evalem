@@ -11,10 +11,10 @@ from ..structures import (
     EvaluationReferenceInstance,
     MetricOutput,
 )
-from ._base import JuryBasedMetric
+from ._base import JuryBasedMetric, Metric
 
 
-class SemanticMetric(JuryBasedMetric):
+class SemanticMetric(Metric):
     """
     Metric respresenting semantics score between predictions and references.
     """
@@ -22,7 +22,7 @@ class SemanticMetric(JuryBasedMetric):
     pass
 
 
-class BertScore(SemanticMetric):
+class BertScore(JuryBasedMetric, SemanticMetric):
     """
     Uses a BERT model to compute the semantic similarity using the contextual
     embeddings from the model.
@@ -104,7 +104,7 @@ class BertScore(SemanticMetric):
         return result
 
 
-class BartScore(SemanticMetric):
+class BartScore(JuryBasedMetric, SemanticMetric):
     """
     This uses BART model (an encoder-decoder model) to compute the
     semantic similarity.
@@ -165,6 +165,81 @@ class BartScore(SemanticMetric):
                 flattened=True,
             ),
         }
+
+
+class BleuMetric(JuryBasedMetric, SemanticMetric):
+    """
+    Bilingual Evaluation Understudy (BLEU) is generally used for
+    text-translation.
+
+    References:
+        - https://en.wikipedia.org/wiki/BLEU
+        - https://aclanthology.org/P02-1040.pdf
+
+    Usage:
+
+        .. code-block: python
+
+            from evalem.metrics import BleuMetric
+
+            metric = BleuMetric()
+            results = metric(predictions=predictions, references=references)
+    """
+
+    def __init__(self) -> None:
+        super().__init__(metrics="bleu")
+
+
+class SacreBleuMetric(JuryBasedMetric, SemanticMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="sacrebleu")
+
+
+class MeteorMetric(JuryBasedMetric, SemanticMetric):
+    """
+    Metric for Evaluation of Translation with Explicit ORdering.
+
+    References:
+        - https://en.wikipedia.org/wiki/METEOR
+        - https://www.cs.cmu.edu/~alavie/METEOR/pdf/Banerjee-Lavie-2005-METEOR.pdf
+        - https://arxiv.org/abs/2109.14250
+
+    Usage:
+
+        .. code-block: python
+
+            from evalem.metrics import MeteorMetric
+
+            metric = MeteorMetric()
+            results = metric(predictions=predictions, references=references)
+    """
+
+    def __init__(self) -> None:
+        super().__init__(metrics="meteor")
+
+
+class RougeMetric(JuryBasedMetric, SemanticMetric):
+    """
+    Recall-Oriented Understudy for Gisting Evaluation.
+
+    References:
+        - https://en.wikipedia.org/wiki/ROUGE_(metric)
+        - https://aclanthology.org/W04-1013.pdf
+        - https://arxiv.org/abs/2109.14250
+
+    Usage:
+
+        .. code-block: python
+
+            from evalem.metrics import RougeMetric
+
+            metric = RougeMetric()
+            results = metric(predictions=predictions, references=references)
+
+    """
+
+    def __init__(self) -> None:
+        super().__init__(metrics="rouge")
 
 
 def main():

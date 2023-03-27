@@ -64,10 +64,14 @@ class SimpleEvaluationPipeline(Pipeline):
             References/ground-truths to be used for evaluation.
             See `evalem.metrics`   for more information.
         """
-        predictions = self.model(inputs, **kwargs)
+        predictions = self.model(inputs, **kwargs.get("model_params", {}))
         return list(
             map(
-                lambda e: e(predictions=predictions, references=references),
+                lambda e: e(
+                    predictions=predictions,
+                    references=references,
+                    **kwargs.get("eval_params", {}),
+                ),
                 self.evaluators,
             ),
         )
