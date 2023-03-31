@@ -48,6 +48,7 @@ class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
     def _postprocess_predictions(
         self,
         predictions: Union[dict, List[dict]],
+        **kwargs,
     ) -> Iterable[QAPredictionDTO]:
         """
         This method converts the pipeline's default output format

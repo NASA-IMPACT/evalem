@@ -36,7 +36,7 @@ def get_squad_v2(
     data = data.shuffle(seed=42) if shuffle else data
     data = data.select(range(nsamples)) if nsamples > 0 else data
 
-    inputs = [dict(question=d["question"], context=d["context"]) for d in data]
+    inputs = [dict(question=d["question"].lstrip(), context=d["context"]) for d in data]
     references = [d["answers"]["text"] for d in data]
 
     inputs, references = zip(*filter(lambda x: len(x[1]) > 0, zip(inputs, references)))
