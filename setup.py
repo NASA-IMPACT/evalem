@@ -21,10 +21,11 @@ setup(
     python_requires=">=3.8",
     packages=[
         "evalem",
-        "evalem.misc",
-        "evalem.models",
         "evalem.evaluators",
         "evalem.metrics",
+        "evalem.misc",
+        "evalem.models",
+        "evalem.pipelines",
     ],
     install_requires=required,
     classifiers=[
