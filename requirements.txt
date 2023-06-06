@@ -1,6 +1,6 @@
 arrow==1.2.3
 bert-score==0.3.13
-datasets==2.3.2
+datasets==2.7.0
 evaluate==0.2.2
 jury==2.2.3
 loguru==0.6.0
