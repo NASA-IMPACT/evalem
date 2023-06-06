@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import datasets
 import pytest
 
 from evalem.evaluators import QAEvaluator, TextClassificationEvaluator
+from evalem.misc.datasets import get_imdb, get_squad_v2
 from evalem.models import (
     QuestionAnsweringHFPipelineWrapper,
     TextClassificationHFPipelineWrapper,
@@ -11,21 +11,13 @@ from evalem.models import (
 
 @pytest.fixture(autouse=True, scope="session")
 def squad_v2_data():
-    _data = datasets.load_dataset(
-        path="squad_v2",
-        split=datasets.ReadInstruction(split_name="validation", from_=0, to=10),
-    )
-    data = _data.to_dict()
+    data = get_squad_v2(data_type="validation", nsamples=10, shuffle=False)
     return data
 
 
 @pytest.fixture(autouse=True, scope="session")
 def imdb_data():
-    _data = datasets.load_dataset(
-        path="imdb",
-        split=datasets.ReadInstruction(split_name="test", from_=0, to=10),
-    )
-    data = _data.to_dict()
+    data = get_imdb(data_type="test", nsamples=10, shuffle=False)
     return data
 
 
