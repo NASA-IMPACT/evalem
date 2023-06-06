@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-
-import json
-from pathlib import Path
-
+import datasets
 import pytest
 
 from evalem.evaluators import QAEvaluator, TextClassificationEvaluator
@@ -14,19 +11,21 @@ from evalem.models import (
 
 @pytest.fixture(autouse=True, scope="session")
 def squad_v2_data():
-    path = Path(__file__).parent.joinpath("data/squad_v2.json")
-    data = {}
-    with open(path, "r") as f:
-        data = json.load(f)
+    _data = datasets.load_dataset(
+        path="squad_v2",
+        split=datasets.ReadInstruction(split_name="validation", from_=0, to=10),
+    )
+    data = _data.to_dict()
     return data
 
 
 @pytest.fixture(autouse=True, scope="session")
 def imdb_data():
-    path = Path(__file__).parent.joinpath("data/imdb.json")
-    data = {}
-    with open(path, "r") as f:
-        data = json.load(f)
+    _data = datasets.load_dataset(
+        path="imdb",
+        split=datasets.ReadInstruction(split_name="test", from_=0, to=10),
+    )
+    data = _data.to_dict()
     return data
 
 
