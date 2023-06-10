@@ -4,7 +4,7 @@ from typing import Iterable
 
 import pytest
 
-from evalem.nlp.structures import PredictionDTO
+from evalem._base.structures import PredictionDTO
 
 
 @pytest.mark.parametrize(

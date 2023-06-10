@@ -3,10 +3,10 @@ from __future__ import annotations
 
 from typing import Iterable, Mapping, Optional, Type, Union
 
-from ._base import AbstractBase
+from .abc import AbstractBase
 from ..metrics import Metric
 from ..metrics.basics import AccuracyMetric
-from ..nlp.structures import (
+from .structures import (
     EvaluationOutput,
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,

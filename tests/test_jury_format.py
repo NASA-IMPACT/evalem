@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from evalem.misc.utils import format_to_jury
-from evalem.nlp.structures import ReferenceDTO
+from evalem._base.structures import ReferenceDTO
 
 
 class References:

@@ -5,9 +5,9 @@ from typing import Iterable, List, Tuple
 
 from jury import Jury
 
-from ._base import AbstractBase
+from .abc import AbstractBase
 from ..misc.utils import format_to_jury
-from ..nlp.structures import (
+from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricOutput,
