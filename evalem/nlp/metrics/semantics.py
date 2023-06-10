@@ -11,7 +11,7 @@ from ..structures import (
     EvaluationReferenceInstance,
     MetricOutput,
 )
-from ._base import JuryBasedMetric, Metric
+from .._base.metrics import JuryBasedMetric, Metric
 
 
 class SemanticMetric(Metric):

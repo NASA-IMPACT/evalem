@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from typing import Any
 
-from .._base import AbstractBase
+from .._base._base import AbstractBase
 
 
 class Pipeline(AbstractBase):

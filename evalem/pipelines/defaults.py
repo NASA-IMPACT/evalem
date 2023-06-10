@@ -2,9 +2,9 @@
 
 from typing import Iterable, List, Mapping, Type, Union
 
-from ..evaluators._base import Evaluator
-from ..models._base import ModelWrapper
-from ..structures import EvaluationReferenceInstance, MetricOutput
+from .._base.evaluators import Evaluator
+from .._base.models import ModelWrapper
+from ..nlp.structures import EvaluationReferenceInstance, MetricOutput
 from ._base import Pipeline
 
 

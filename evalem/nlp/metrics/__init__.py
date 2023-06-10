@@ -1,5 +1,5 @@
 # flake8: noqa
-from ._base import JuryBasedMetric, Metric
+from .._base.metrics import JuryBasedMetric, Metric
 from .basics import (
     AccuracyMetric,
     BasicMetric,

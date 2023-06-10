@@ -8,7 +8,7 @@ from ..structures import (
     MetricOutput,
     SinglePredictionInstance,
 )
-from ._base import JuryBasedMetric, Metric
+from .._base.metrics import JuryBasedMetric, Metric
 
 
 class BasicMetric(Metric):

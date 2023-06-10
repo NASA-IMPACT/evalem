@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 
-from ._base import (
+from .._base.evaluators import (
+    EvaluationOutput,
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
-    Metric,
-    MetricOutput,
+    Evaluator,
 )
 
 
-class NullMetric(Metric):
+class NullEvaluator(Evaluator):
     """
-    A dummy metric computer that's irrelevant and only used for testing purposes.
+    A dummy evaluator that's irrelevant and only used for testing purposes.
     """
 
-    def compute(
+    def evaluate(
         self,
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> EvaluationOutput:
         return 0.0
 
 

@@ -8,7 +8,7 @@ from ..metrics import (
     PrecisionMetric,
     RecallMetric,
 )
-from ._base import Evaluator
+from .._base.evaluators import Evaluator
 
 
 class BasicEvaluator(Evaluator):

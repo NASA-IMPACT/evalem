@@ -6,8 +6,8 @@ from typing import Callable, Iterable, Type
 from transformers import Pipeline as HF_Pipeline
 from transformers import PreTrainedModel, PreTrainedTokenizerBase
 
-from .._base import AbstractBase
-from ..structures import EvaluationPredictionInstance
+from ._base import AbstractBase
+from ..nlp.structures import EvaluationPredictionInstance
 
 
 class ModelWrapper(AbstractBase):
