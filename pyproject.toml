@@ -25,12 +25,7 @@ classifiers = [
     "Operating System :: Unix",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Topic :: Large Language Models",
-    "Topic :: Machine Learning",
-    "Topic :: NLP",
-    "Topic :: Natural Language Processing",
-    "Topic :: Neural Network",
-    "Topic :: Transformers",
+    "Topic :: Text Processing :: General",
 ]
 dependencies = [
     "arrow==1.2.3",
@@ -69,4 +64,16 @@ path = "evalem/__init__.py"
 include = [
     "/evalem",
 ]
+
+[tool.hatch.envs.test]
+dependencies = [
+  "coverage[toml]",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+]
+[tool.hatch.envs.test.scripts]
+run-coverage = "pytest --cov-config=pyproject.toml --cov=pkg --cov=tests"
+run = "run-coverage --no-cov"
+
 
