@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-
-import json
-from pathlib import Path
-
 import pytest
 
 from evalem.evaluators import QAEvaluator, TextClassificationEvaluator
+from evalem.misc.datasets import get_imdb, get_squad_v2
 from evalem.models import (
     QuestionAnsweringHFPipelineWrapper,
     TextClassificationHFPipelineWrapper,
@@ -14,19 +11,13 @@ from evalem.models import (
 
 @pytest.fixture(autouse=True, scope="session")
 def squad_v2_data():
-    path = Path(__file__).parent.joinpath("data/squad_v2.json")
-    data = {}
-    with open(path, "r") as f:
-        data = json.load(f)
+    data = get_squad_v2(data_type="validation", nsamples=10, shuffle=False)
     return data
 
 
 @pytest.fixture(autouse=True, scope="session")
 def imdb_data():
-    path = Path(__file__).parent.joinpath("data/imdb.json")
-    data = {}
-    with open(path, "r") as f:
-        data = json.load(f)
+    data = get_imdb(data_type="test", nsamples=10, shuffle=False)
     return data
 
 
