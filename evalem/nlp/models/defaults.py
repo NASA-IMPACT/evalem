@@ -4,7 +4,10 @@ from typing import Iterable, List, Optional, Union
 
 from transformers import pipeline as hf_pipeline
 
-from ..._base.structures import PredictionDTO, QAPredictionDTO
+from ..._base.structures import ClassificationDTO
+
+# load nlp specific structure dto
+from ..structures import QuestionAnsweringDTO
 from ._base import HFPipelineWrapper, PreTrainedModel, PreTrainedTokenizerBase
 
 
@@ -19,6 +22,26 @@ class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
             Which tokenizer to use?
         ```device```:```str```
             Which device to run the model on? cpu? gpu? mps?
+
+    Usage:
+        .. code-block: python
+
+                from evalem.nlp.models import QuestionAnsweringHFPipelineWrapper
+
+                model = AutoModelForQuestionAnswering.from_pretrained("distilbert-base-cased-distilled-squad")
+                tokenizer = AutoTokenizer.from_pretrained("distilbert-base-cased-distilled-squad")
+
+                wrapped_model = QuestionAnsweringHFPipelineWrapper(
+                    model=model,
+                    tokenizer=tokenizer,
+                    device="mps"
+                )
+
+                data = [dict(context="This is a context.", question="What is this?")]
+
+                res = wrapped_model(data)
+                print(res[0])
+
     """
 
     _task = "question-answering"
@@ -49,17 +72,17 @@ class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
         self,
         predictions: Union[dict, List[dict]],
         **kwargs,
-    ) -> Iterable[QAPredictionDTO]:
+    ) -> Iterable[QuestionAnsweringDTO]:
         """
         This method converts the pipeline's default output format
-        to the iterable of QAPredictionDTO.
+        to the iterable of QuestionAnsweringDTO.
 
         Args:
             ```predictions```: ```Union[dict, List[dict]]```
                 Predictions provided by the QA pipeline.
 
         Returns:
-            Converted format: ```Iterable[QAPredictionDTO]```
+            Converted format: ```Iterable[QuestionAnsweringDTO]```
         """
         if isinstance(predictions, dict):
             predictions = [predictions]
@@ -67,11 +90,13 @@ class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
         # Note: Default model here is guaranteed to have these keys.
         return list(
             map(
-                lambda p: QAPredictionDTO(
-                    text=p["answer"],
+                lambda p: QuestionAnsweringDTO(
+                    value=p.get("value", p["answer"]),
                     score=p["score"],
                     start=p.get("start"),
                     end=p.get("end"),
+                    context=p.get("context"),
+                    question=p.get("question"),
                 ),
                 predictions,
             ),
@@ -100,6 +125,25 @@ class TextClassificationHFPipelineWrapper(HFPipelineWrapper):
             Which tokenizer to use?
         ```device```:```str```
             Which device to run the model on? cpu? gpu? mps?
+
+    Usage:
+        .. code-block: python
+
+                from evalem.nlp.models import QuestionAnsweringHFPipelineWrapper
+
+                model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
+                tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased-finetuned-sst-2-english")
+
+                wrapped_model = TextClassificationHFPipelineWrapper(
+                    model=model,
+                    tokenizer=tokenizer,
+                    device="mps"
+                )
+
+                data = ["evalem is awesome."]
+
+                res = wrapped_model(data)
+                print(res[0])
     """
 
     _task = "text-classification"
@@ -131,17 +175,17 @@ class TextClassificationHFPipelineWrapper(HFPipelineWrapper):
     def _postprocess_predictions(
         self,
         predictions: Union[dict, List[dict]],
-    ) -> Iterable[PredictionDTO]:
+    ) -> Iterable[ClassificationDTO]:
         """
         This method converts the pipeline's default output format
-        to the iterable of QAPredictionDTO.
+        to the iterable of ClassificationDTO.
 
         Args:
             ```predictions```: ```Union[dict, List[dict]]```
                 Predictions provided by the the classificaton pipeline.
 
         Returns:
-            Converted format: ```Iterable[PredictionDTO]```
+            Converted format: ```Iterable[ClassificationDTO]```
         """
         if isinstance(predictions, dict):
             predictions = [predictions]
@@ -149,8 +193,8 @@ class TextClassificationHFPipelineWrapper(HFPipelineWrapper):
         # Note: Default model here is guaranteed to have these keys.
         # Use label mapping. If mapping doesn't exist, just use the prediction.
         predictions = map(
-            lambda p: PredictionDTO(
-                text=self.label_map.get(p["label"], p["label"]),
+            lambda p: ClassificationDTO(
+                value=self.label_map.get(p["label"], p["label"]),
                 score=p.get("score"),
             ),
             predictions,
