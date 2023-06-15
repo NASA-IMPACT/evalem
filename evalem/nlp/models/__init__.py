@@ -1,5 +1,5 @@
 # flake8: noqa
-from .._base.models import HFLMWrapper, HFPipelineWrapper, ModelWrapper
+from ._base import HFLMWrapper, HFPipelineWrapper
 from .defaults import (
     DefaultQAModelWrapper,
     QuestionAnsweringHFPipelineWrapper,

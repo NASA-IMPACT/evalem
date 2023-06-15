@@ -4,8 +4,8 @@ from typing import Iterable, List, Optional, Union
 
 from transformers import pipeline as hf_pipeline
 
-from ..structures import PredictionDTO, QAPredictionDTO
-from .._base.models import HFPipelineWrapper, PreTrainedModel, PreTrainedTokenizerBase
+from ..._base.structures import PredictionDTO, QAPredictionDTO
+from ._base import HFPipelineWrapper, PreTrainedModel, PreTrainedTokenizerBase
 
 
 class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
