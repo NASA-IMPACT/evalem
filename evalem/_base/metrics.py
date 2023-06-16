@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import Iterable, List, Tuple
 
 from jury import Jury
+from sklearn.metrics import confusion_matrix
 
 from ..misc.utils import format_to_jury
 from .abc import AbstractBase
@@ -11,6 +12,7 @@ from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricOutput,
+    SinglePredictionInstance,
 )
 
 
@@ -235,6 +237,44 @@ class F1Metric(JuryBasedMetric, BasicMetric):
 class AccuracyMetric(JuryBasedMetric, BasicMetric):
     def __init__(self) -> None:
         super().__init__(metrics="accuracy")
+
+
+class ConfusionMatrix(BasicMetric):
+    """
+    This computes confusion matrix for the classification task.
+    """
+
+    def compute(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+        **kwargs,
+    ) -> MetricOutput:
+        # converts all the structure into list of string
+        predictions, references = format_to_jury(predictions), format_to_jury(
+            references,
+        )
+
+        predictions, references = self._flatten_references(predictions, references)
+
+        labels = self.__get_labels(predictions, references)
+        return dict(
+            confusion_matrix=confusion_matrix(references, predictions, labels=labels),
+            labels=labels,
+            flattened=True,
+            total_items=len(predictions),
+            empty_items=0,
+        )
+
+    def __get_labels(
+        self,
+        predictions: SinglePredictionInstance,
+        references: SinglePredictionInstance,
+    ):
+        """
+        Get unique list of labels across predictions + references.
+        """
+        return sorted(set(predictions).union(references))
 
 
 def main():

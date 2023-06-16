@@ -4,8 +4,7 @@ from __future__ import annotations
 from typing import Iterable, Mapping, Optional, Type, Union
 
 from .abc import AbstractBase
-from ..metrics import Metric
-from ..metrics.basics import AccuracyMetric
+from .metrics import AccuracyMetric, Metric
 from .structures import (
     EvaluationOutput,
     EvaluationPredictionInstance,
