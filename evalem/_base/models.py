@@ -4,7 +4,8 @@ from abc import abstractmethod
 from typing import Callable, Iterable
 
 # TODO implement wrapper for these
-# from transformers import Pipeline as HF_Pipeline
+from transformers import Pipeline as HF_Pipeline
+
 # from transformers import PreTrainedModel, PreTrainedTokenizerBase
 
 from .abc import AbstractBase
@@ -48,8 +49,7 @@ class ModelWrapper(AbstractBase):
 
         # specifies how the input format conversion is done
         self.inputs_preprocessor: Callable = (
-            kwargs.get("inputs_preprocessor", self._preprocess_inputs)
-            or self._preprocess_inputs
+            kwargs.get("inputs_preprocessor", self._preprocess_inputs) or self._preprocess_inputs
         )
 
         # specifies how the predictions formatting is done
