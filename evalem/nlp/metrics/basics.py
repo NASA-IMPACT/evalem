@@ -1,48 +1,14 @@
 #!/usr/bin/env python3
 
-from sklearn.metrics import confusion_matrix
-
-from ..misc.utils import format_to_jury
-from ..structures import (
+from ..._base.metrics import BasicMetric, JuryBasedMetric
+from ..._base.structures import (
     EvaluationReferenceInstance,
     MetricOutput,
     SinglePredictionInstance,
 )
-from .._base.metrics import JuryBasedMetric, Metric
 
 
-class BasicMetric(Metric):
-    """
-    This represents generic metric implementation
-    which is task-agnostic.
-    Note:
-        This exists only for the sake of type hierarchy.
-    """
-
-    pass
-
-
-class PrecisionMetric(JuryBasedMetric, BasicMetric):
-    def __init__(self) -> None:
-        super().__init__(metrics="precision")
-
-
-class RecallMetric(JuryBasedMetric, BasicMetric):
-    def __init__(self) -> None:
-        super().__init__(metrics="recall")
-
-
-class F1Metric(JuryBasedMetric, BasicMetric):
-    def __init__(self) -> None:
-        super().__init__(metrics="f1")
-
-
-class AccuracyMetric(JuryBasedMetric, BasicMetric):
-    def __init__(self) -> None:
-        super().__init__(metrics="accuracy")
-
-
-class ExactMatchMetric(JuryBasedMetric, BasicMetric):
+class ExactMatchMetricNLP(JuryBasedMetric, BasicMetric):
     def __init__(self) -> None:
         super().__init__(metrics="exact_match")
 
@@ -63,41 +29,3 @@ class ExactMatchMetric(JuryBasedMetric, BasicMetric):
         )
         result["flattened"] = True
         return result
-
-
-class ConfusionMatrix(BasicMetric):
-    """
-    This computes confusion matrix for the classification task.
-    """
-
-    def compute(
-        self,
-        predictions: SinglePredictionInstance,
-        references: EvaluationReferenceInstance,
-        **kwargs,
-    ) -> MetricOutput:
-        # converts all the structure into list of string
-        predictions, references = format_to_jury(predictions), format_to_jury(
-            references,
-        )
-
-        predictions, references = self._flatten_references(predictions, references)
-
-        labels = self.__get_labels(predictions, references)
-        return dict(
-            confusion_matrix=confusion_matrix(references, predictions, labels=labels),
-            labels=labels,
-            flattened=True,
-            total_items=len(predictions),
-            empty_items=0,
-        )
-
-    def __get_labels(
-        self,
-        predictions: SinglePredictionInstance,
-        references: SinglePredictionInstance,
-    ):
-        """
-        Get unique list of labels across predictions + references.
-        """
-        return sorted(set(predictions).union(references))

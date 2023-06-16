@@ -5,13 +5,13 @@ from typing import Optional
 import numpy as np
 from jury.metrics import Bartscore
 
-from ..misc.utils import format_to_jury
-from ..structures import (
+from ..._base.metrics import JuryBasedMetric, Metric
+from ..._base.structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricOutput,
 )
-from .._base.metrics import JuryBasedMetric, Metric
+from ...misc.utils import format_to_jury
 
 
 class SemanticMetric(Metric):

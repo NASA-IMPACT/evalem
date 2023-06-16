@@ -5,8 +5,8 @@ from typing import Iterable, List, Tuple
 
 from jury import Jury
 
-from .abc import AbstractBase
 from ..misc.utils import format_to_jury
+from .abc import AbstractBase
 from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
@@ -133,6 +133,17 @@ class Metric(AbstractBase):
         return predictions, references
 
 
+class BasicMetric(Metric):
+    """
+    This represents generic metric implementation
+    which is task-agnostic.
+    Note:
+        This exists only for the sake of type hierarchy.
+    """
+
+    pass
+
+
 class JuryBasedMetric(Metric):
     """
     This is the metric component that's based on vanilla Jury scorer.
@@ -148,6 +159,10 @@ class JuryBasedMetric(Metric):
         - `metrics.basics.RecallMetric`
         - `metrics.basics.F1Metric`
         - `metrics.basics.AccuracyMetric`
+
+    Note:
+        We create some basic metrics for any nlp/cv tasks to be used.
+        So, all the input predictions/references as labels are converted to strings.
 
     Direct usage:
 
@@ -200,6 +215,26 @@ class JuryBasedMetric(Metric):
             references=references,
             **kwargs,
         )
+
+
+class PrecisionMetric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="precision")
+
+
+class RecallMetric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="recall")
+
+
+class F1Metric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="f1")
+
+
+class AccuracyMetric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="accuracy")
 
 
 def main():

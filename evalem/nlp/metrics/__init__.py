@@ -1,14 +1,5 @@
 # flake8: noqa
-from .._base.metrics import JuryBasedMetric, Metric
-from .basics import (
-    AccuracyMetric,
-    BasicMetric,
-    ConfusionMatrix,
-    ExactMatchMetric,
-    F1Metric,
-    PrecisionMetric,
-    RecallMetric,
-)
+from .basics import ExactMatchMetricNLP
 from .semantics import (
     BartScore,
     BertScore,
