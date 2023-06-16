@@ -25,7 +25,9 @@ def format_to_jury(
             return EvaluationDTO(value=str(instance))
         return instance
 
-    instances = list(map(_dtofy, instances)) if isinstance(instances, Iterable) else instances
+    instances = (
+        list(map(_dtofy, instances)) if isinstance(instances, Iterable) else instances
+    )
 
     # if not List[list] and only List[Type[EvaluationDTO]]
     if isinstance(instances, list) and isinstance(instances[0], EvaluationDTO):
