@@ -13,7 +13,7 @@ import torch
 class EvaluationDTO:
     # could be image, text, anything
     value: Any
-    score: Optional[int, float] = None
+    score: Optional[Union[int, float]] = None
 
     @classmethod
     def from_dict(cls, dct: dict) -> EvaluationDTO:

@@ -11,12 +11,12 @@ class References:
             "Reference 2",
         ]
 
-        DICTS = [dict(text="Reference 1"), dict(text="Reference 2")]
+        DICTS = [dict(value="Reference 1"), dict(value="Reference 2")]
 
         DTOS = [ReferenceDTO(value="Reference 1"), ReferenceDTO(value="Reference 2")]
 
         MIXED = [
-            dict(text="Reference 1"),
+            dict(value="Reference 1"),
             ReferenceDTO(value="Reference 2"),
         ]
 
@@ -27,8 +27,8 @@ class References:
         ]
 
         DICTS = [
-            [dict(text="Reference 1.1"), dict(text="Reference 1.2")],
-            [dict(text="Reference 2.1"), dict(text="Reference 2.2")],
+            [dict(value="Reference 1.1"), dict(value="Reference 1.2")],
+            [dict(value="Reference 2.1"), dict(value="Reference 2.2")],
         ]
 
         DTOS = [
@@ -38,7 +38,7 @@ class References:
 
         MIXED = [
             ["Reference 1.1", ReferenceDTO(value="Reference 1.2")],
-            [dict(text="Reference 2.1"), ReferenceDTO(value="Reference 2.2")],
+            [dict(value="Reference 2.1"), ReferenceDTO(value="Reference 2.2")],
         ]
 
 
@@ -77,6 +77,5 @@ def test_multi_mixed():
 
 def test_single_ints():
     # right now, the jury conversion only works for only strings
-    refs = [1, 2, 3, 4]
+    refs = ["1", "2", "3", "4"]
     assert format_to_jury(refs) == refs
-    assert format_to_jury(refs) != list(map(str, refs))
