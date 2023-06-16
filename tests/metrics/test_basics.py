@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from evalem.metrics import (
+from evalem._base.metrics import (
     AccuracyMetric,
     ConfusionMatrix,
     F1Metric,

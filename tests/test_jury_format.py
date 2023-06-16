@@ -13,11 +13,11 @@ class References:
 
         DICTS = [dict(text="Reference 1"), dict(text="Reference 2")]
 
-        DTOS = [ReferenceDTO(text="Reference 1"), ReferenceDTO(text="Reference 2")]
+        DTOS = [ReferenceDTO(value="Reference 1"), ReferenceDTO(value="Reference 2")]
 
         MIXED = [
             dict(text="Reference 1"),
-            ReferenceDTO(text="Reference 2"),
+            ReferenceDTO(value="Reference 2"),
         ]
 
     class Multi:
@@ -32,13 +32,13 @@ class References:
         ]
 
         DTOS = [
-            [ReferenceDTO(text="Reference 1.1"), ReferenceDTO(text="Reference 1.2")],
-            [ReferenceDTO(text="Reference 2.1"), ReferenceDTO(text="Reference 2.2")],
+            [ReferenceDTO(value="Reference 1.1"), ReferenceDTO(value="Reference 1.2")],
+            [ReferenceDTO(value="Reference 2.1"), ReferenceDTO(value="Reference 2.2")],
         ]
 
         MIXED = [
-            ["Reference 1.1", ReferenceDTO(text="Reference 1.2")],
-            [dict(text="Reference 2.1"), ReferenceDTO(text="Reference 2.2")],
+            ["Reference 1.1", ReferenceDTO(value="Reference 1.2")],
+            [dict(text="Reference 2.1"), ReferenceDTO(value="Reference 2.2")],
         ]
 
 
