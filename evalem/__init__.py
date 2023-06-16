@@ -1,7 +1,7 @@
 __version__ = "0.0.3-alpha.1"
 
-from ._base.evaluators import Evaluator
-from ._base.pipelines import EvaluationPipeline, SimpleEvaluationPipeline
+from ._base.evaluators import Evaluator  # noqa
+from ._base.pipelines import EvaluationPipeline, SimpleEvaluationPipeline  # noqa
 
 
 class BaseMetrics:
@@ -15,4 +15,4 @@ class BaseMetrics:
         F1Metric,
         PrecisionMetric,
         RecallMetric,
-    )
+    )  # noqa
