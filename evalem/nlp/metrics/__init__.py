@@ -1,5 +1,7 @@
 # flake8: noqa
-from .basics import ExactMatchMetricNLP
+
+from ._base import NLPMetric
+from .basics import ExactMatchMetric
 from .semantics import (
     BartScore,
     BertScore,

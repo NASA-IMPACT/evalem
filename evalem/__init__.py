@@ -1,6 +1,7 @@
 __version__ = "0.0.3-alpha.1"
 
 from ._base.evaluators import Evaluator
+from ._base.pipelines import EvaluationPipeline, SimpleEvaluationPipeline
 
 
 class BaseMetrics:

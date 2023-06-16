@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
-from ..._base.metrics import BasicMetric, JuryBasedMetric
+from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
     EvaluationReferenceInstance,
     MetricOutput,
     SinglePredictionInstance,
 )
+from ._base import NLPMetric
 
 
-class ExactMatchMetricNLP(JuryBasedMetric, BasicMetric):
+class ExactMatchMetric(JuryBasedMetric, NLPMetric):
     def __init__(self) -> None:
         super().__init__(metrics="exact_match")
 

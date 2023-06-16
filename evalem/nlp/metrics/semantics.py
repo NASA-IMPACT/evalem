@@ -5,16 +5,17 @@ from typing import Optional
 import numpy as np
 from jury.metrics import Bartscore
 
-from ..._base.metrics import JuryBasedMetric, Metric
+from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricOutput,
 )
 from ...misc.utils import format_to_jury
+from ._base import NLPMetric
 
 
-class SemanticMetric(Metric):
+class SemanticMetric(NLPMetric):
     """
     Metric respresenting semantics score between predictions and references.
     """
