@@ -71,6 +71,8 @@ dependencies = [
   "pytest",
   "pytest-cov",
   "pytest-mock",
+  "black==23.3.0",
+  "flake8==5.0.4",
 ]
 [tool.hatch.envs.test.scripts]
 run-coverage = "pytest --cov-config=pyproject.toml --cov=pkg --cov=tests"
