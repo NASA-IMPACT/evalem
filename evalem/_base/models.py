@@ -4,7 +4,7 @@ from abc import abstractmethod
 from typing import Callable, Iterable
 
 # TODO implement wrapper for these
-from transformers import Pipeline as HF_Pipeline
+from transformers import Pipeline as HF_Pipeline  # noqa
 
 # from transformers import PreTrainedModel, PreTrainedTokenizerBase
 
