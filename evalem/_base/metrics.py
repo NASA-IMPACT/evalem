@@ -4,13 +4,15 @@ from abc import abstractmethod
 from typing import Iterable, List, Tuple
 
 from jury import Jury
+from sklearn.metrics import confusion_matrix
 
-from .._base import AbstractBase
 from ..misc.utils import format_to_jury
-from ..structures import (
+from .abc import AbstractBase
+from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricOutput,
+    SinglePredictionInstance,
 )
 
 
@@ -133,6 +135,17 @@ class Metric(AbstractBase):
         return predictions, references
 
 
+class BasicMetric(Metric):
+    """
+    This represents generic metric implementation
+    which is task-agnostic.
+    Note:
+        This exists only for the sake of type hierarchy.
+    """
+
+    pass
+
+
 class JuryBasedMetric(Metric):
     """
     This is the metric component that's based on vanilla Jury scorer.
@@ -148,6 +161,10 @@ class JuryBasedMetric(Metric):
         - `metrics.basics.RecallMetric`
         - `metrics.basics.F1Metric`
         - `metrics.basics.AccuracyMetric`
+
+    Note:
+        We create some basic metrics for any nlp/cv tasks to be used.
+        So, all the input predictions/references as labels are converted to strings.
 
     Direct usage:
 
@@ -200,6 +217,64 @@ class JuryBasedMetric(Metric):
             references=references,
             **kwargs,
         )
+
+
+class PrecisionMetric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="precision")
+
+
+class RecallMetric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="recall")
+
+
+class F1Metric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="f1")
+
+
+class AccuracyMetric(JuryBasedMetric, BasicMetric):
+    def __init__(self) -> None:
+        super().__init__(metrics="accuracy")
+
+
+class ConfusionMatrix(BasicMetric):
+    """
+    This computes confusion matrix for the classification task.
+    """
+
+    def compute(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+        **kwargs,
+    ) -> MetricOutput:
+        # converts all the structure into list of string
+        predictions, references = format_to_jury(predictions), format_to_jury(
+            references,
+        )
+
+        predictions, references = self._flatten_references(predictions, references)
+
+        labels = self.__get_labels(predictions, references)
+        return dict(
+            confusion_matrix=confusion_matrix(references, predictions, labels=labels),
+            labels=labels,
+            flattened=True,
+            total_items=len(predictions),
+            empty_items=0,
+        )
+
+    def __get_labels(
+        self,
+        predictions: SinglePredictionInstance,
+        references: SinglePredictionInstance,
+    ):
+        """
+        Get unique list of labels across predictions + references.
+        """
+        return sorted(set(predictions).union(references))
 
 
 def main():

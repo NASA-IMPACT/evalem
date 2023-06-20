@@ -1,28 +1,17 @@
 #!/usr/bin/env python3
 
-from ..metrics import (
+from ..._base.metrics import (
     AccuracyMetric,
     ConfusionMatrix,
-    ExactMatchMetric,
     F1Metric,
     PrecisionMetric,
     RecallMetric,
 )
-from ._base import Evaluator
+from ..metrics import ExactMatchMetric
+from ._base import NLPEvaluator
 
 
-class BasicEvaluator(Evaluator):
-    """
-    This represents generic evaluator implementation
-    which is task-agnostic.
-    Note:
-        This exists only for the sake of type hierarchy.
-    """
-
-    pass
-
-
-class QAEvaluator(BasicEvaluator):
+class QAEvaluator(NLPEvaluator):
     """
     An evaluator for QA-based tasks.
     """
@@ -37,7 +26,7 @@ class QAEvaluator(BasicEvaluator):
         )
 
 
-class TextClassificationEvaluator(BasicEvaluator):
+class TextClassificationEvaluator(NLPEvaluator):
     """
     An evaluator for text classification tasks.
     """

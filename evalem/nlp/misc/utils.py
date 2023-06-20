@@ -2,12 +2,11 @@
 
 from typing import Iterable, List, Union
 
-from .._base.structures import EvaluationDTO, PredictionInstance, ReferenceInstance
+from ..structures import EvaluationDTO, PredictionInstance, ReferenceInstance
 
 
 def format_to_jury(
     instances: Union[PredictionInstance, ReferenceInstance],
-    stringify: bool = True,
 ) -> Union[List[str], List[List[str]]]:
     if not instances:
         return []
@@ -20,9 +19,7 @@ def format_to_jury(
         if isinstance(instance, dict):
             return EvaluationDTO.from_dict(instance)
         if isinstance(instance, str):
-            return EvaluationDTO(value=instance)
-        if stringify and isinstance(instance, int):
-            return EvaluationDTO(value=str(instance))
+            return EvaluationDTO(text=instance)
         return instance
 
     instances = (
@@ -31,7 +28,7 @@ def format_to_jury(
 
     # if not List[list] and only List[Type[EvaluationDTO]]
     if isinstance(instances, list) and isinstance(instances[0], EvaluationDTO):
-        return list(map(lambda x: x.value, instances))
+        return list(map(lambda x: x.text, instances))
     # list of list handler
     elif isinstance(instances, list) and isinstance(instances[0], list):
         instances = list(map(_dtofy, instances))

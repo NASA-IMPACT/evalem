@@ -3,7 +3,7 @@
 
 from pprint import pprint
 
-from evalem.metrics import (
+from evalem.nlp.metrics import (
     BartScore,
     BertScore,
     BleuMetric,

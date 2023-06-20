@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import pytest
 
-from evalem.evaluators import QAEvaluator, TextClassificationEvaluator
-from evalem.misc.datasets import get_imdb, get_squad_v2
-from evalem.models import (
+from evalem.nlp.evaluators import QAEvaluator, TextClassificationEvaluator
+from evalem.nlp.misc.datasets import get_imdb, get_squad_v2
+from evalem.nlp.models import (
     QuestionAnsweringHFPipelineWrapper,
     TextClassificationHFPipelineWrapper,
 )

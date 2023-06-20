@@ -1,14 +1,34 @@
 #!/usr/bin/env python3
 
-from typing import Iterable, List, Mapping, Type, Union
+from abc import abstractmethod
+from typing import Any, Iterable, List, Mapping, Type, Union
 
-from ..evaluators._base import Evaluator
-from ..models._base import ModelWrapper
-from ..structures import EvaluationReferenceInstance, MetricOutput
-from ._base import Pipeline
+from .abc import AbstractBase
+from .evaluators import Evaluator
+from .models import ModelWrapper
+from .structures import EvaluationReferenceInstance, MetricOutput
 
 
-class SimpleEvaluationPipeline(Pipeline):
+class EvaluationPipeline(AbstractBase):
+    """
+    Represents a type for Pipeline component.
+    All the downstream pipeline object should implement the `.run(...)` method.
+
+    See `pipelines.defaults.SimpleEvaluationPipeline` for an implementation.
+    """
+
+    @abstractmethod
+    def run(self, *args, **kwags) -> Any:
+        """
+        Entry-point method to run the evaluation.
+        """
+        raise NotImplementedError()
+
+    def __call__(self, *args, **kwargs) -> Any:
+        return self.run(*args, **kwargs)
+
+
+class SimpleEvaluationPipeline(EvaluationPipeline):
     """
     This is a very basic evaluation pipeline that uses single model
     and a list of evaluators to run the evaluation.

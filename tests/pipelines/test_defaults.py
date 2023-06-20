@@ -5,7 +5,7 @@ from typing import Iterable
 
 import pytest
 
-from evalem.pipelines import SimpleEvaluationPipeline
+from evalem._base.pipelines import SimpleEvaluationPipeline
 
 # from ..models.test_defaults import TestDefaultModels
 

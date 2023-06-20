@@ -8,11 +8,11 @@ with open("README.md") as fh:
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
-exec(open("evalem/__version__.py").read())
+version = exec(open("evalem/__init__.py").read())
 
 setup(
     name="evalem",
-    version=__version__,
+    version=version,
     description="An evaluation framework for your NLP pipelines",
     long_description=long_description,
     long_description_content_type="text/markdown",

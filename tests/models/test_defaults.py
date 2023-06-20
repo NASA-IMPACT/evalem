@@ -4,7 +4,7 @@ from typing import Iterable
 
 import pytest
 
-from evalem.structures import PredictionDTO
+from evalem._base.structures import EvaluationDTO
 
 
 @pytest.mark.parametrize(
@@ -16,14 +16,14 @@ from evalem.structures import PredictionDTO
 )
 @pytest.mark.models
 class TestDefaultModels:
-    def test_predictions_format(self, data, model, request):
+    def test_text_predictions_format(self, data, model, request):
         data = request.getfixturevalue(data)
         model = request.getfixturevalue(model)
         predictions = model(data.get("inputs", []))
         assert isinstance(predictions, Iterable)
-        assert isinstance(predictions[0], PredictionDTO)
+        assert isinstance(predictions[0], EvaluationDTO)
 
-    def test_predictions_len(self, data, model, request):
+    def test_text_predictions_len(self, data, model, request):
         data = request.getfixturevalue(data)
         model = request.getfixturevalue(model)
         predictions = model(data.get("inputs", []))
