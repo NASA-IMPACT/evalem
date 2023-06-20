@@ -3,14 +3,13 @@
     This module contains nlp specific base classes.
 """
 
+
 from typing import Type
 
-from ..._base.models import (
-    HF_Pipeline,
-    HFWrapper,
-    PreTrainedModel,
-    PreTrainedTokenizerBase,
-)
+from transformers import Pipeline as HF_Pipeline  # noqa
+from transformers import PreTrainedModel, PreTrainedTokenizerBase
+
+from ..._base.models import HFWrapper
 
 
 class HFLMWrapper(HFWrapper):

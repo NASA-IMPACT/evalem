@@ -3,11 +3,6 @@
 from abc import abstractmethod
 from typing import Callable, Iterable
 
-# TODO implement wrapper for these
-from transformers import Pipeline as HF_Pipeline  # noqa
-
-# from transformers import PreTrainedModel, PreTrainedTokenizerBase
-
 from .abc import AbstractBase
 from .structures import EvaluationPredictionInstance
 
@@ -49,7 +44,8 @@ class ModelWrapper(AbstractBase):
 
         # specifies how the input format conversion is done
         self.inputs_preprocessor: Callable = (
-            kwargs.get("inputs_preprocessor", self._preprocess_inputs) or self._preprocess_inputs
+            kwargs.get("inputs_preprocessor", self._preprocess_inputs)
+            or self._preprocess_inputs
         )
 
         # specifies how the predictions formatting is done
@@ -123,6 +119,9 @@ class ModelWrapper(AbstractBase):
 class HFWrapper(ModelWrapper):
     """
     A type wrapper for all the downstream Huggingface based models
+
+    See `evalem.nlp.models._base.HFWrapper`, `evalem.nlp.models.HFPipelineWrapper`
+    for downstream nlp wrappers.
     """
 
     pass
