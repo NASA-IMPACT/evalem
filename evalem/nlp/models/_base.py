@@ -12,7 +12,6 @@ from transformers import Pipeline as HF_Pipeline  # noqa
 from transformers import PreTrainedModel, PreTrainedTokenizerBase
 
 from ..._base.models import HFWrapper
-from ..._base.structures import PathType
 
 
 class HFLMWrapper(HFWrapper):
@@ -106,7 +105,7 @@ class HFORTMixin:
         device: str = "cpu",
         hf_params: Optional[dict] = None,
         **kwargs,
-    ) -> HF_Pipeline:
+    ) -> Type[HFPipelineWrapper]:
         """
         classmethod to load model based on onnxruntime models.
         It nicely fits with existing huggingface pipeline.
