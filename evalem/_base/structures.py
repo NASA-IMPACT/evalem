@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, Union
 
 import numpy as np
@@ -67,3 +68,5 @@ EvaluationReferenceInstance = Union[SingleReferenceInstance, MultipleReferenceIn
 
 EvaluationOutput = Union[int, float, Dict[str, Union[str, int, float]]]
 MetricOutput = Union[int, float, Dict[str, Union[str, int, float]]]
+
+PathType = Union[str, Path]
