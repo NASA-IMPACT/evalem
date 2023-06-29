@@ -35,6 +35,7 @@ dependencies = [
     "jury==2.2.3",
     "loguru==0.6.0",
     "numpy==1.24.2",
+    "onnxruntime==1.15.0",
     "optimum==1.8.8",
     "pandas==1.5.3",
     "pyarrow==11.0.0",
