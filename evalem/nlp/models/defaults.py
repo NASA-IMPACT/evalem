@@ -8,10 +8,15 @@ from ..._base.structures import ClassificationDTO
 
 # load nlp specific structure dto
 from ..structures import QuestionAnsweringDTO
-from ._base import HFPipelineWrapper, PreTrainedModel, PreTrainedTokenizerBase
+from ._base import (
+    HFORTMixin,
+    HFPipelineWrapper,
+    PreTrainedModel,
+    PreTrainedTokenizerBase,
+)
 
 
-class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper):
+class QuestionAnsweringHFPipelineWrapper(HFPipelineWrapper, HFORTMixin):
     """
     A HFPipelineWrapper for question-answering.
 
@@ -114,7 +119,7 @@ class DefaultQAModelWrapper(HFPipelineWrapper):
         )
 
 
-class TextClassificationHFPipelineWrapper(HFPipelineWrapper):
+class TextClassificationHFPipelineWrapper(HFPipelineWrapper, HFORTMixin):
     """
     A HFPipelineWrapper for text classification.
 
