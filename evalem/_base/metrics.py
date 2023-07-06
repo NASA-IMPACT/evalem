@@ -212,11 +212,18 @@ class JuryBasedMetric(Metric):
         predictions = format_to_jury(predictions)
         references = format_to_jury(references)
 
-        return self.scorer(
+        results = self.scorer(
             predictions=predictions,
             references=references,
             **kwargs,
         )
+        res = dict()
+        for k, v in results.items():
+            # for single metrics, just flatten the dict that has "score" key
+            if isinstance(v, dict) and "score" in v:
+                res["score"] = v.get("score", None)
+            res[k] = v
+        return res
 
 
 class PrecisionMetric(JuryBasedMetric, BasicMetric):
