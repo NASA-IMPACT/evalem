@@ -31,8 +31,7 @@ class BaseMetricTest:
         assert isinstance(metric_result, dict)
 
     def test_metric_return_keys(self, metric_result):
-        assert self._key in metric_result
-        assert "score" in metric_result[self._key]
+        assert "score" in metric_result
 
 
 def main():
