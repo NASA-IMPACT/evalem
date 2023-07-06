@@ -28,5 +28,6 @@ class ExactMatchMetric(JuryBasedMetric, NLPMetric):
             references=references,
             **kwargs,
         )
+        result["score"] = result.get("exact_match", None)
         result["flattened"] = True
         return result
