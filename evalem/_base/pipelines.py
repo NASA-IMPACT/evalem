@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from abc import abstractmethod
-from typing import Any, Iterable, List, Mapping, Type, Union
+from typing import Any, Iterable, List, Mapping, Optional, Type, Union
 
+from ..misc.utils import InstanceCountMixin
 from .abc import AbstractBase
 from .evaluators import Evaluator
 from .models import ModelWrapper
@@ -95,6 +96,24 @@ class SimpleEvaluationPipeline(EvaluationPipeline):
                 self.evaluators,
             ),
         )
+
+
+class NamedSimpleEvaluationPipeline(InstanceCountMixin, SimpleEvaluationPipeline):
+    """
+
+    This is a named version SimpleEvaluationPipeline that uses single model
+    and a list of evaluators to run the evaluation.
+    """
+
+    def __init__(
+        self,
+        model: Type[ModelWrapper],
+        evaluators: Union[Evaluator, Iterable[Evaluator]],
+        name: Optional[str] = None,
+    ) -> None:
+        InstanceCountMixin.__init__(self)
+        SimpleEvaluationPipeline.__init__(self, model=model, evaluators=evaluators)
+        self.name = name
 
 
 def main():

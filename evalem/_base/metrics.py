@@ -223,6 +223,11 @@ class JuryBasedMetric(Metric):
             if isinstance(v, dict) and "score" in v:
                 res["score"] = v.get("score", None)
             res[k] = v
+        # if hasattr(self.scorer, "metrics"):
+        #     if len(self.scorer.metrics) == 1:
+        #         res["metric_name"] = self.scorer.metrics[0].name
+        # else:
+        #     res["metric_name"] = self.scorer.name
         return res
 
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from itertools import count
 from typing import Iterable, List, Union
 
 from .._base.structures import EvaluationDTO, PredictionInstance, ReferenceInstance
@@ -38,3 +39,20 @@ def format_to_jury(
         return list(map(format_to_jury, instances))
     else:
         return instances
+
+
+class InstanceCountMixin:
+    _ids = count(0)
+    _names = set()
+
+    def __init__(self):
+        self.idx = next(self._ids)
+        self._name = None
+
+    @property
+    def name(self):
+        return self._name or f"{self.__class__.__name__}:{self.idx}"
+
+    @name.setter
+    def name(self, name: str):
+        self._name = name
