@@ -5,7 +5,7 @@ from typing import Optional
 import numpy as np
 from jury.metrics import Bartscore
 
-from ..._base.metrics import JuryBasedMetric
+from ..._base.metrics import JuryBasedMetric, MetricResult
 from ..._base.structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
@@ -101,7 +101,9 @@ class BertScore(JuryBasedMetric, SemanticMetric):
         # and want to just have mean/average.
         if not self.per_instance_score:
             for _key in ["precision", "recall", "f1"]:
-                result["bertscore"][_key] = np.mean(result["bertscore"][_key])
+                result.extra["bertscore"][_key] = np.mean(
+                    result.extra["bertscore"][_key],
+                )
         return result
 
 
@@ -157,12 +159,14 @@ class BartScore(JuryBasedMetric, SemanticMetric):
         # Low-level access to Bartscorer directly
         # See: https://github.com/neulab/BARTScore
         score = np.mean(self.scorer.scorer.score(predictions, references, **kwargs))
-        return dict(
+        return MetricResult(
             score=score,
-            model_checkpoint=self.scorer.model_checkpoint,
-            model_weights=self.scorer.model_weights,
             total_items=len(predictions),
-            flattened=True,
+            metric_name="BartScore",
+            extra=dict(
+                flattened=True,
+                model_checkpoint=self.scorer.model_checkpoint,
+            ),
         )
 
 

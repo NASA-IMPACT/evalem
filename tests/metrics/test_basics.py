@@ -16,42 +16,34 @@ from ._base import BaseMetricTest, predictions, references
 
 class TestAccuracyMetric(BaseMetricTest):
     _metric_cls = AccuracyMetric
-    _key = "accuracy"
 
     def test_metric_score(self, metric_result):
-        assert metric_result[self._key]["score"] >= 0
+        assert metric_result.score >= 0
 
 
 class TestF1Metric(BaseMetricTest):
     _metric_cls = F1Metric
-    _key = "f1"
 
     def test_metric_score(self, metric_result):
-        assert metric_result[self._key]["score"] >= 0
+        assert metric_result.score >= 0
 
 
 class TestPrecisionMetric(BaseMetricTest):
     _metric_cls = PrecisionMetric
-    _key = "precision"
 
     def test_metric_score(self, metric_result):
-        assert metric_result[self._key]["score"] >= 0
+        assert metric_result.score >= 0
 
 
 class TestRecallMetric(BaseMetricTest):
     _metric_cls = RecallMetric
-    _key = "recall"
 
     def test_metric_score(self, metric_result):
-        assert metric_result[self._key]["score"] >= 0
+        assert metric_result.score >= 0
 
 
 class TestConfusionMatrix(BaseMetricTest):
     _metric_cls = ConfusionMatrix
-    _key = "confusion_matrix"
-
-    def test_metric_return_keys(self, metric_result):
-        assert self._key in metric_result
 
     def test_metric_score(self, metric_result):
-        assert isinstance(metric_result[self._key], np.ndarray)
+        assert isinstance(metric_result.extra["confusion_matrix"], np.ndarray)

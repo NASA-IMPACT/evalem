@@ -3,13 +3,14 @@
 
 import pytest
 
+from evalem._base.structures import MetricResult
+
 from .fixtures import predictions, references
 
 
 @pytest.mark.metrics
 class BaseMetricTest:
     _metric_cls = None
-    _key = None
 
     @pytest.fixture(autouse=True, scope="class")
     def metric_result(self, predictions, references):
@@ -28,10 +29,7 @@ class BaseMetricTest:
         """
         Check if return type of each metric is a dictionary
         """
-        assert isinstance(metric_result, dict)
-
-    def test_metric_return_keys(self, metric_result):
-        assert "score" in metric_result
+        assert isinstance(metric_result, MetricResult)
 
 
 def main():

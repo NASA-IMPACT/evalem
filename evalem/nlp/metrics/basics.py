@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import dataclasses
+
 from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
     EvaluationReferenceInstance,
@@ -28,6 +30,12 @@ class ExactMatchMetric(JuryBasedMetric, NLPMetric):
             references=references,
             **kwargs,
         )
-        result["score"] = result.get("exact_match", None)
-        result["flattened"] = True
+
+        extra = result.extra
+        extra["flattened"] = True
+        result = dataclasses.replace(
+            result,
+            score=result.extra.get("exact_match", None),
+            extra=extra,
+        )
         return result
