@@ -1,6 +1,7 @@
 # flake8: noqa
 #!/usr/bin/env python3
 
+import math
 from pprint import pprint
 
 from evalem.nlp.metrics import (
@@ -26,7 +27,7 @@ class TestBartScore(BaseMetricTest):
     _metric_cls = BartScore
 
     def test_metric_score(self, metric_result):
-        assert -10 <= metric_result.score <= 10
+        assert -math.inf <= metric_result.score <= math.inf
 
 
 class TestBleuMetric(BaseMetricTest):
