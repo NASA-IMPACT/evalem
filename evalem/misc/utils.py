@@ -106,6 +106,11 @@ def build_comparison_table(
 
 
 class InstanceCountMixin:
+    """
+    This mixin is used to autogenerate names for
+    individual object.
+    """
+
     _ids = count(0)
     _names = set()
 

@@ -1,7 +1,11 @@
 __version__ = "0.0.4-alpha"
 
 from ._base.evaluators import Evaluator  # noqa
-from ._base.pipelines import EvaluationPipeline, SimpleEvaluationPipeline  # noqa
+from ._base.pipelines import (  # noqa
+    EvaluationPipeline,
+    NamedSimpleEvaluationPipeline,
+    SimpleEvaluationPipeline,
+)
 from .nlp.models import (  # noqa
     QuestionAnsweringHFPipelineWrapper,
     TextClassificationHFPipelineWrapper,
