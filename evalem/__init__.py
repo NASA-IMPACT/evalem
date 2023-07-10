@@ -2,6 +2,10 @@ __version__ = "0.0.4-alpha"
 
 from ._base.evaluators import Evaluator  # noqa
 from ._base.pipelines import EvaluationPipeline, SimpleEvaluationPipeline  # noqa
+from .nlp.models import (  # noqa
+    QuestionAnsweringHFPipelineWrapper,
+    TextClassificationHFPipelineWrapper,
+)
 
 
 class BaseMetrics:
@@ -15,4 +19,14 @@ class BaseMetrics:
         F1Metric,
         PrecisionMetric,
         RecallMetric,
+    )
+
+
+class BaseStructures:
+    from ._base.structures import (
+        EvaluationDTO,
+        PredictionDTO,
+        PredictionInstance,
+        ReferenceDTO,
+        ReferenceInstance,
     )

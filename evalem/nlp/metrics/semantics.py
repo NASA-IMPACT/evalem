@@ -157,15 +157,13 @@ class BartScore(JuryBasedMetric, SemanticMetric):
         # Low-level access to Bartscorer directly
         # See: https://github.com/neulab/BARTScore
         score = np.mean(self.scorer.scorer.score(predictions, references, **kwargs))
-        return {
-            "bartscore": dict(
-                score=score,
-                model_checkpoint=self.scorer.model_checkpoint,
-                model_weights=self.scorer.model_weights,
-                total_items=len(predictions),
-                flattened=True,
-            ),
-        }
+        return dict(
+            score=score,
+            model_checkpoint=self.scorer.model_checkpoint,
+            model_weights=self.scorer.model_weights,
+            total_items=len(predictions),
+            flattened=True,
+        )
 
 
 class BleuMetric(JuryBasedMetric, SemanticMetric):

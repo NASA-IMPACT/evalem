@@ -20,7 +20,7 @@ class TestBertScore(BaseMetricTest):
     _key = "bertscore"
 
     def test_metric_score(self, metric_result):
-        assert -1 <= metric_result[self._key]["score"] <= 1
+        assert -1 <= metric_result["score"] <= 1
 
 
 class TestBartScore(BaseMetricTest):
@@ -28,7 +28,7 @@ class TestBartScore(BaseMetricTest):
     _key = "bartscore"
 
     def test_metric_score(self, metric_result):
-        assert -10 <= metric_result[self._key]["score"] <= 10
+        assert -10 <= metric_result["score"] <= 10
 
 
 class TestBleuMetric(BaseMetricTest):
@@ -37,7 +37,7 @@ class TestBleuMetric(BaseMetricTest):
 
     def test_metric_score(self, metric_result):
         pprint(metric_result)
-        assert 0 <= metric_result[self._key]["score"] <= 1
+        assert 0 <= metric_result["score"] <= 1
 
 
 class TestSacreBleuMetric(BaseMetricTest):
@@ -46,7 +46,7 @@ class TestSacreBleuMetric(BaseMetricTest):
 
     def test_metric_score(self, metric_result):
         pprint(metric_result)
-        assert 0 <= metric_result[self._key]["score"] <= 1
+        assert 0 <= metric_result["score"] <= 1
 
 
 class TestMeteorMetric(BaseMetricTest):
@@ -55,7 +55,7 @@ class TestMeteorMetric(BaseMetricTest):
 
     def test_metric_score(self, metric_result):
         pprint(metric_result)
-        assert 0 <= metric_result[self._key]["score"] <= 1
+        assert 0 <= metric_result["score"] <= 1
 
 
 class TestRougeMetric(BaseMetricTest):
