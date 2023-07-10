@@ -68,10 +68,11 @@ class MetricResult:
         return asdict(self)
 
     def __hash__(self) -> str:
+        score = self.score if isinstance(self.score, (float, int)) else 0
         return hash(
             (
                 self.metric_name,
-                round(self.score, 3),
+                round(score, 3),
                 self.total_items,
                 self.empty_items,
             ),
