@@ -158,12 +158,9 @@ class Evaluator(AbstractBase):
         Returns:
             Mapping (dict) of metric name to corresponding metric output
         """
-        return dict(
+        return list(
             map(
-                lambda m: (
-                    m.__classname__,
-                    m(predictions=predictions, references=references, **kwargs),
-                ),
+                lambda m: m(predictions=predictions, references=references, **kwargs),
                 self.metrics,
             ),
         )

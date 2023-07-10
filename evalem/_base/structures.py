@@ -67,6 +67,16 @@ class MetricResult:
     def to_dict(self) -> dict:
         return asdict(self)
 
+    def __hash__(self) -> str:
+        return hash(
+            (
+                self.metric_name,
+                round(self.score, 3),
+                self.total_items,
+                self.empty_items,
+            ),
+        )
+
 
 ImageTensor = Union[np.ndarray, torch.Tensor]
 
