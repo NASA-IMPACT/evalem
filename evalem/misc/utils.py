@@ -68,6 +68,10 @@ def build_comparison_table(
     A utility that runs the provided evaluation pipeline
     and generates a comparison table.
 
+    Note:
+        Assumes the same set of inputs and references are run through
+        different evaluation pipeline
+
     Args:
         ```eval_pipes```: ```Type[EvaluationPipeline]```
             Evaluation pipeline objects

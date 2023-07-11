@@ -6,6 +6,7 @@ from ._base.pipelines import (  # noqa
     NamedSimpleEvaluationPipeline,
     SimpleEvaluationPipeline,
 )
+from ._base.structures import MetricResult
 from .nlp.models import (  # noqa
     QuestionAnsweringHFPipelineWrapper,
     TextClassificationHFPipelineWrapper,
