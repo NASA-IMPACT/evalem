@@ -104,6 +104,6 @@ def build_comparison_table(
     res = comparison_map
     try:
         res = pd.concat(dfs, join="outer", axis=1)
-    except:
+    except:  # noqa
         logger.warning("Failed to create pd.DataFrame table. Fallback to dict")
     return res
