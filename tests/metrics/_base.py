@@ -1,6 +1,8 @@
 # flake8: noqa
 #!/usr/bin/env python3
 
+from pprint import pprint
+
 import pytest
 
 from evalem._base.structures import MetricResult
@@ -30,6 +32,10 @@ class BaseMetricTest:
         Check if return type of each metric is a dictionary
         """
         assert isinstance(metric_result, MetricResult)
+
+    def test_metric_score(self, metric_result):
+        pprint(metric_result)
+        assert 0 <= metric_result.score <= 1
 
 
 def main():

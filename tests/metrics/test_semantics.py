@@ -33,25 +33,13 @@ class TestBartScore(BaseMetricTest):
 class TestBleuMetric(BaseMetricTest):
     _metric_cls = BleuMetric
 
-    def test_metric_score(self, metric_result):
-        pprint(metric_result)
-        assert 0 <= metric_result.score <= 1
-
 
 class TestSacreBleuMetric(BaseMetricTest):
     _metric_cls = SacreBleuMetric
 
-    def test_metric_score(self, metric_result):
-        pprint(metric_result)
-        assert 0 <= metric_result.score <= 1
-
 
 class TestMeteorMetric(BaseMetricTest):
     _metric_cls = MeteorMetric
-
-    def test_metric_score(self, metric_result):
-        pprint(metric_result)
-        assert 0 <= metric_result.score <= 1
 
 
 class TestRougeMetric(BaseMetricTest):
@@ -68,6 +56,7 @@ class TestRougeMetric(BaseMetricTest):
     def test_metric_score(self, metric_result):
         key = "rouge"
         pprint(metric_result)
+        assert 0 <= metric_result.score <= 1
         assert 0 <= metric_result.extra[key]["rouge1"] <= 1
         assert 0 <= metric_result.extra[key]["rouge2"] <= 1
         assert 0 <= metric_result.extra[key]["rougeL"] <= 1

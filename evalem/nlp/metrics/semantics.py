@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
+
+import dataclasses
 from typing import Optional
 
 import numpy as np
 from jury.metrics import Bartscore
 
-from ..._base.metrics import JuryBasedMetric, MetricResult
+from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
-    MetricOutput,
+    MetricResult,
 )
 from ...misc.utils import format_to_jury
 from ._base import NLPMetric
@@ -87,7 +89,7 @@ class BertScore(JuryBasedMetric, SemanticMetric):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         device = kwargs.pop("device", self.device)
         model_type = kwargs.pop("model_type", self.model_type)
         result = super().compute(
@@ -150,7 +152,7 @@ class BartScore(JuryBasedMetric, SemanticMetric):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         predictions = format_to_jury(predictions)
         references = format_to_jury(references)
 
@@ -243,6 +245,20 @@ class RougeMetric(JuryBasedMetric, SemanticMetric):
 
     def __init__(self) -> None:
         super().__init__(metrics="rouge")
+
+    def compute(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+        **kwargs,
+    ) -> MetricResult:
+        result = super().compute(
+            predictions=predictions,
+            references=references,
+            **kwargs,
+        )
+        score = float(np.mean(list((result.extra or {}).get("rouge", {}).values())))
+        return dataclasses.replace(result, score=score)
 
 
 def main():

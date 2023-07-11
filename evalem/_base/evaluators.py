@@ -114,7 +114,6 @@ class Evaluator(AbstractBase):
         metrics = [metrics] if not isinstance(metrics, Iterable) else metrics
         for _metric in metrics:
             if not isinstance(_metric, Metric):
-                print(_metric)
                 raise TypeError(
                     f"Invalid type for metric={_metric}. Expected type of [Metric]. Got {type(_metric)}",
                 )

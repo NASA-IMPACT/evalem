@@ -17,29 +17,17 @@ from ._base import BaseMetricTest, predictions, references
 class TestAccuracyMetric(BaseMetricTest):
     _metric_cls = AccuracyMetric
 
-    def test_metric_score(self, metric_result):
-        assert metric_result.score >= 0
-
 
 class TestF1Metric(BaseMetricTest):
     _metric_cls = F1Metric
-
-    def test_metric_score(self, metric_result):
-        assert metric_result.score >= 0
 
 
 class TestPrecisionMetric(BaseMetricTest):
     _metric_cls = PrecisionMetric
 
-    def test_metric_score(self, metric_result):
-        assert metric_result.score >= 0
-
 
 class TestRecallMetric(BaseMetricTest):
     _metric_cls = RecallMetric
-
-    def test_metric_score(self, metric_result):
-        assert metric_result.score >= 0
 
 
 class TestConfusionMatrix(BaseMetricTest):
