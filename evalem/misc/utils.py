@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from itertools import chain, count
-from typing import Any, Iterable, List, Type, Union
+from itertools import chain
+from typing import Any, Iterable, List, Union
 
 import pandas as pd
 from loguru import logger
@@ -103,25 +103,3 @@ def build_comparison_table(
     except:
         logger.warning("Failed to create pd.DataFrame table. Fallback to dict")
     return res
-
-
-class InstanceCountMixin:
-    """
-    This mixin is used to autogenerate names for
-    individual object.
-    """
-
-    _ids = count(0)
-    _names = set()
-
-    def __init__(self):
-        self.idx = next(self._ids)
-        self._name = None
-
-    @property
-    def name(self):
-        return self._name or f"{self.__class__.__name__}:{self.idx}"
-
-    @name.setter
-    def name(self, name: str):
-        self._name = name

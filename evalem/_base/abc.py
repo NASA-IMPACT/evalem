@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from abc import ABC
+from itertools import count
 from typing import Any
 
 
@@ -24,6 +25,27 @@ class AbstractBase(ABC):
 
     def __repr__(self) -> str:
         return f"[{self.__classname__}]"
+
+
+class InstanceCountMixin:
+    """
+    This mixin is used to autogenerate names for
+    individual object.
+    """
+
+    _ids = count(0)
+
+    def __init__(self):
+        self.idx = next(self._ids)
+        self._name = None
+
+    @property
+    def name(self):
+        return self._name or f"{self.__class__.__name__}:{self.idx}"
+
+    @name.setter
+    def name(self, name: str):
+        self._name = name
 
 
 def main():

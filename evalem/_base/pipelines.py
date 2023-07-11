@@ -3,8 +3,7 @@
 from abc import abstractmethod
 from typing import Any, Iterable, List, Mapping, Optional, Type, Union
 
-from ..misc.utils import InstanceCountMixin
-from .abc import AbstractBase
+from .abc import AbstractBase, InstanceCountMixin
 from .evaluators import Evaluator
 from .models import ModelWrapper
 from .structures import EvaluationReferenceInstance, MetricOutput
