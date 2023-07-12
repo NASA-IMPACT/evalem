@@ -3,6 +3,7 @@
 from itertools import chain
 from typing import Any, Iterable, List, Union
 
+import numpy as np
 import pandas as pd
 from loguru import logger
 
@@ -91,9 +92,11 @@ def build_comparison_table(
     results = map(lambda ep: ep(inputs=inputs, references=references), eval_pipes)
     comparison_map = {}
     dfs = []
+    n_items_tracker = []
     for idx, (ep, result) in enumerate(zip(eval_pipes, results)):
         name = f"eval-pipe-{idx}" if not hasattr(ep, "name") else ep.name
         metrics = set(flatten_list(result))
+        n_items_tracker.extend([m.total_items for m in metrics])
         comparison_map[name] = metrics
 
         df = pd.DataFrame(
@@ -101,6 +104,9 @@ def build_comparison_table(
         )
         df.set_index("metric", inplace=True)
         dfs.append(df)
+    logger.info(
+        f"{int(np.mean(n_items_tracker))} total items are evaluated on average.",
+    )
     res = comparison_map
     try:
         res = pd.concat(dfs, join="outer", axis=1)
