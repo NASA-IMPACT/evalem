@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
+import dataclasses
+
 from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
     EvaluationReferenceInstance,
-    MetricOutput,
+    MetricResult,
     SinglePredictionInstance,
 )
 from ._base import NLPMetric
@@ -18,7 +20,7 @@ class ExactMatchMetric(JuryBasedMetric, NLPMetric):
         predictions: SinglePredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         # This metric doesn't support multi-reference format.
         # So, we flatten everything:
         # Single Prediction, Multi-Ref -> Single Prediction, Single-Ref
@@ -28,6 +30,12 @@ class ExactMatchMetric(JuryBasedMetric, NLPMetric):
             references=references,
             **kwargs,
         )
-        result["score"] = result.get("exact_match", None)
-        result["flattened"] = True
+
+        extra = result.extra
+        extra["flattened"] = True
+        result = dataclasses.replace(
+            result,
+            score=result.extra.get("exact_match", None),
+            extra=extra,
+        )
         return result

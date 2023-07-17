@@ -41,4 +41,4 @@ jobs:
 
       # Run the unit tests
       - name: Test with pytest
-        run: python -m pytest --verbose tests/
+        run: python -m pytest --cov evalem --verbose tests/

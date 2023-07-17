@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 from abc import abstractmethod
 from typing import Iterable, List, Tuple
 
@@ -11,7 +13,7 @@ from .abc import AbstractBase
 from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
-    MetricOutput,
+    MetricResult,
     SinglePredictionInstance,
 )
 
@@ -40,7 +42,7 @@ class Metric(AbstractBase):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         """
         The actual entrypoint method to perform evaluation and give output metric.
 
@@ -71,7 +73,7 @@ class Metric(AbstractBase):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         """
         The actual entrypoint method to perform evaluation and give output metric.
 
@@ -208,7 +210,7 @@ class JuryBasedMetric(Metric):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         predictions = format_to_jury(predictions)
         references = format_to_jury(references)
 
@@ -223,7 +225,8 @@ class JuryBasedMetric(Metric):
             if isinstance(v, dict) and "score" in v:
                 res["score"] = v.get("score", None)
             res[k] = v
-        return res
+        res["metric_name"] = self.__classname__
+        return MetricResult.from_dict(res)
 
 
 class PrecisionMetric(JuryBasedMetric, BasicMetric):
@@ -256,7 +259,7 @@ class ConfusionMatrix(BasicMetric):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         # converts all the structure into list of string
         predictions, references = format_to_jury(predictions), format_to_jury(
             references,
@@ -265,12 +268,19 @@ class ConfusionMatrix(BasicMetric):
         predictions, references = self._flatten_references(predictions, references)
 
         labels = self.__get_labels(predictions, references)
-        return dict(
-            confusion_matrix=confusion_matrix(references, predictions, labels=labels),
-            labels=labels,
-            flattened=True,
-            total_items=len(predictions),
-            empty_items=0,
+        return MetricResult.from_dict(
+            dict(
+                metric_name="ConfusionMatrix",
+                confusion_matrix=confusion_matrix(
+                    references,
+                    predictions,
+                    labels=labels,
+                ),
+                labels=labels,
+                flattened=True,
+                total_items=len(predictions),
+                empty_items=0,
+            ),
         )
 
     def __get_labels(

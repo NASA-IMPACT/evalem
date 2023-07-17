@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Type, Union
@@ -41,6 +42,43 @@ class ReferenceDTO(EvaluationDTO):
     pass
 
 
+@dataclass(frozen=True)
+class MetricResult:
+    score: float
+    total_items: int
+    metric_name: str
+    empty_items: int = 0
+    extra: Optional[dict] = None
+
+    @classmethod
+    def from_dict(cls, dct: dict) -> MetricResult:
+        dct = deepcopy(dct)
+        return cls(
+            score=dct.pop("score", None),
+            total_items=dct.pop("total_items", None),
+            metric_name=dct.pop("metric_name", None),
+            empty_items=dct.pop("empty_items", 0),
+            extra=dct,
+        )
+
+    def as_dict(self) -> dict:
+        return asdict(self)
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    def __hash__(self) -> str:
+        score = self.score if isinstance(self.score, (float, int)) else 0
+        return hash(
+            (
+                self.metric_name,
+                round(score, 3),
+                self.total_items,
+                self.empty_items,
+            ),
+        )
+
+
 ImageTensor = Union[np.ndarray, torch.Tensor]
 
 # Represents type instance for any single downstream prediction
@@ -67,6 +105,6 @@ MultipleReferenceInstance = List[List[ReferenceInstance]]
 EvaluationReferenceInstance = Union[SingleReferenceInstance, MultipleReferenceInstance]
 
 EvaluationOutput = Union[int, float, Dict[str, Union[str, int, float]]]
-MetricOutput = Union[int, float, Dict[str, Union[str, int, float]]]
+MetricOutput = Union[int, float, Dict[str, Union[str, int, float]], MetricResult]
 
 PathType = Union[str, Path]

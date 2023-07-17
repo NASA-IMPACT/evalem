@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+
+import dataclasses
 from typing import Optional
 
 import numpy as np
@@ -9,7 +11,7 @@ from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
-    MetricOutput,
+    MetricResult,
 )
 from ...misc.utils import format_to_jury
 from ._base import NLPMetric
@@ -87,7 +89,7 @@ class BertScore(JuryBasedMetric, SemanticMetric):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         device = kwargs.pop("device", self.device)
         model_type = kwargs.pop("model_type", self.model_type)
         result = super().compute(
@@ -101,7 +103,9 @@ class BertScore(JuryBasedMetric, SemanticMetric):
         # and want to just have mean/average.
         if not self.per_instance_score:
             for _key in ["precision", "recall", "f1"]:
-                result["bertscore"][_key] = np.mean(result["bertscore"][_key])
+                result.extra["bertscore"][_key] = np.mean(
+                    result.extra["bertscore"][_key],
+                )
         return result
 
 
@@ -148,7 +152,7 @@ class BartScore(JuryBasedMetric, SemanticMetric):
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
         **kwargs,
-    ) -> MetricOutput:
+    ) -> MetricResult:
         predictions = format_to_jury(predictions)
         references = format_to_jury(references)
 
@@ -157,12 +161,14 @@ class BartScore(JuryBasedMetric, SemanticMetric):
         # Low-level access to Bartscorer directly
         # See: https://github.com/neulab/BARTScore
         score = np.mean(self.scorer.scorer.score(predictions, references, **kwargs))
-        return dict(
+        return MetricResult(
             score=score,
-            model_checkpoint=self.scorer.model_checkpoint,
-            model_weights=self.scorer.model_weights,
             total_items=len(predictions),
-            flattened=True,
+            metric_name="BartScore",
+            extra=dict(
+                flattened=True,
+                model_checkpoint=self.scorer.model_checkpoint,
+            ),
         )
 
 
@@ -239,6 +245,20 @@ class RougeMetric(JuryBasedMetric, SemanticMetric):
 
     def __init__(self) -> None:
         super().__init__(metrics="rouge")
+
+    def compute(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+        **kwargs,
+    ) -> MetricResult:
+        result = super().compute(
+            predictions=predictions,
+            references=references,
+            **kwargs,
+        )
+        score = float(np.mean(list((result.extra or {}).get("rouge", {}).values())))
+        return dataclasses.replace(result, score=score)
 
 
 def main():
