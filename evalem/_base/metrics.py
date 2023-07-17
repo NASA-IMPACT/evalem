@@ -226,11 +226,6 @@ class JuryBasedMetric(Metric):
                 res["score"] = v.get("score", None)
             res[k] = v
         res["metric_name"] = self.__classname__
-        # if hasattr(self, "scorer") and hasattr(self.scorer, "metrics"):
-        #     if len(self.scorer.metrics) == 1:
-        #         res["metric_name"] = self.scorer.metrics[0].name
-        # elif hasattr(self, "scorer") and not hasattr(self.scorer, "metrics"):
-        #     res["metric_name"] = self.scorer.name
         return MetricResult.from_dict(res)
 
 
