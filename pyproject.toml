@@ -36,7 +36,7 @@ dependencies = [
     "loguru>=0.7.2",
     "numpy==1.26.4",
     "onnx==1.14.0",
-    "onnxruntime==1.15.0",
+    "onnxruntime==1.20.1",
     "optimum==1.8.8",
     "pandas==2.2.3",
     "pyarrow==17.0.0",
