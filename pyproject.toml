@@ -33,7 +33,7 @@ dependencies = [
     "datasets==2.9.0",
     "evaluate==0.2.2",
     "jury==2.2.3",
-    "loguru==0.6.0",
+    "loguru>=0.7.2",
     "numpy==1.26.4",
     "onnx==1.14.0",
     "onnxruntime==1.15.0",
