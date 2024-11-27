@@ -47,7 +47,7 @@ dependencies = [
     "sentencepiece==0.1.99",
     "seqeval==1.2.2",
     "torch==2.5.1",
-    "transformers==4.28.1",
+    "transformers==4.28.1"
 ]
 
 [project.optional-dependencies]
