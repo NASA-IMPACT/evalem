@@ -5,7 +5,7 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
 import numpy as np
 import torch
@@ -108,3 +108,4 @@ EvaluationOutput = Union[int, float, Dict[str, Union[str, int, float]]]
 MetricOutput = Union[int, float, Dict[str, Union[str, int, float]], MetricResult]
 
 PathType = Union[str, Path]
+SequenceType = Union[List, Tuple, Set]

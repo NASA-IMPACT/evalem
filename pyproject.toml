@@ -12,7 +12,7 @@ dynamic = [
 description = "An evaluation framework for your NLP pipelines"
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [
     { email = "np0069@uah.edu" },
 ]
@@ -28,26 +28,26 @@ classifiers = [
     "Topic :: Text Processing :: General",
 ]
 dependencies = [
-    "arrow==1.2.3",
-    "bert-score==0.3.13",
-    "datasets==2.7.0",
-    "evaluate==0.2.2",
-    "jury==2.2.3",
-    "loguru==0.6.0",
-    "numpy==1.24.2",
-    "onnx==1.14.0",
-    "onnxruntime==1.15.0",
-    "optimum==1.8.8",
-    "pandas==1.5.3",
-    "pyarrow==11.0.0",
+    "pyarrow>=18.1.0",
+    "bert-score>=0.3.13",
+    "datasets==2.9.0",
+    "evaluate>=0.4.3",
+    "jury==2.3.1",
+    "loguru>=0.6.0",
+    "numpy>=2.2.0",
+    "onnx>=1.17.0",
+    "onnxruntime>=1.20.1",
+    "optimum>=1.23.3",
+    "pandas>=2.2.3",
     "pytest==7.2.1",
     "pytest-cov==4.0.0",
-    "sacrebleu==2.3.1",
-    "scikit-learn==1.2.1",
-    "sentencepiece==0.1.99",
+    "sacrebleu==2.4.3",
+    "scikit-learn>=1.6.0",
+    "sentencepiece==0.2.0",
     "seqeval==1.2.2",
-    "torch==2.0.1",
-    "transformers==4.28.1",
+    "torch>=2.5.1",
+    "transformers>=4.47.0",
+    "pip>=24.3.1",
 ]
 
 [project.optional-dependencies]
@@ -56,6 +56,11 @@ cv = [
 ]
 nlp = [
     # dependencies for nlp module
+]
+
+llm = [
+    "outlines>=0.1.9",
+    "openai>=1.57.3",
 ]
 
 [project.urls]

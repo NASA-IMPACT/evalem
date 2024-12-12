@@ -14,6 +14,7 @@ from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricResult,
+    SequenceType,
     SinglePredictionInstance,
 )
 
@@ -126,10 +127,10 @@ class Metric(AbstractBase):
         res = []
         for pred, ref in zip(predictions, references):
             # if multiple predictions, skip for now
-            if isinstance(pred, Iterable) and not isinstance(pred, str):
+            if isinstance(pred, SequenceType) and not isinstance(pred, str):
                 raise TypeError("Cannot handle multiple prediction instance")
             # if multiple references
-            elif isinstance(ref, Iterable) and not isinstance(ref, str):
+            elif isinstance(ref, SequenceType) and not isinstance(ref, str):
                 res.extend(list(map(lambda r: (pred, r), ref)))
             else:
                 res.append((pred, ref))
