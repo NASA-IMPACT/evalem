@@ -13,6 +13,7 @@ from ..._base.structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricResult,
+    SequenceType,
 )
 from ._base import NLPMetric
 
@@ -143,11 +144,11 @@ class LLMAsJudgeMetric(NLPMetric):
         res = []
         for preds, refs in zip(predictions, references):
             # multiple predictions, single reference
-            if isinstance(preds, (list, tuple, set)) and isinstance(refs, str):
+            if isinstance(preds, SequenceType) and isinstance(refs, str):
                 res.extend(list(map(lambda p: (p, refs), preds)))
 
             # single prediction, multiple references
-            elif isinstance(preds, str) and isinstance(refs, (list, tuple, set)):
+            elif isinstance(preds, str) and isinstance(refs, SequenceType):
                 res.extend(list(map(lambda r: (preds, r), refs)))
 
             # single prediction, single reference
