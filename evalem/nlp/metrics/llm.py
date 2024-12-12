@@ -24,6 +24,68 @@ class AggregationType(Enum):
 
 
 class LLMAsJudgeMetric(NLPMetric):
+    """
+    Uses a language model to compute metrics by performing a binary
+    classification of prediction matching with the reference.
+    Uses N tries and compute the aggregate score for each prediction.
+
+    The prompt can be changed using `prompt` attribute.
+
+    Args:
+        ```model```: ```str```
+            OpenaAI-api compatible model name.
+            Could be:
+                - open ai models
+                - ollama models
+        ```api_base```: ```str```
+            Base URL for api requests.
+            - openai: https://api.openai.com/v1
+            - ollama: https://localhost:11434/v1
+            If `/v1` is not present, it will be appended
+        ```api_key```: ```Optional[str]```
+            API key to make request for compleition
+        ```n_tries```: ```int```
+            Number of times the judgement is done for scoring.
+            The final aggregated scores will be based on `LLMAsJudgeMetric.AggregationType`
+        ```prompt```: ```Optional[str]```
+            Prompt to use for generating the scores.
+            If not provided, defaults to `LLMAsJudgeMetric._prompt`
+        ```aggregation_type```: ```Optional[AggregationType]```
+            Decides how to aggregate scores from the multiple judgement tries.
+            Defaults to `AggregationType.MEAN` if not provided.
+        ```debug```:```bool```
+            Boolean flag for debug-mode outputs
+
+
+    Usage:
+        .. code-block: python
+
+            from evalem.nlp import LLMAsJudgeMetric
+
+            model = "ollama/llama3.2:3b"
+            api_base = "http://localhost:11434/v1"
+            model = "gpt-4o-mini"
+
+            api_base = "https://api.openai.com/v1"
+
+            references=["This is title 1", "This has title 2"]
+            predictions=[
+                ["Title 1", "title 1 absolutely"],
+                ["this is title 3, not title 2"]
+            ]
+
+            metric = LLMAsJudgeMetric(
+                model=MODEL,
+                api_base=API_BASE,
+                api_key=os.environ.get("OPENAI_API_KEY"),
+                # api_key=None,
+                n_tries=3,
+                prompt=PROMPT,
+                debug=True,
+            )
+            result = metric.compuate(references=references, predictions=predictions)
+    """
+
     _prompt = (
         "You are a very good binary classifier."
         + " Classify the quality of prediction based on the provided reference.\n"
@@ -53,6 +115,15 @@ class LLMAsJudgeMetric(NLPMetric):
         self.n_tries = n_tries or 1
         self.prompt = prompt or LLMAsJudgeMetric._prompt
         self.aggregation_type = aggregation_type or AggregationType.MEAN
+
+        self._sanity_check_prmopt(self.prompt)
+
+    def _sanity_check_prmopt(self, prompt: str) -> bool:
+        if "{prediction}" not in prompt or "{reference}" not in prompt:
+            raise ValueError(
+                "Missing '{prediction} and '{reference}' placeholders in the prmopt.",
+            )
+        return True
 
     def __clean_model(self, model: str) -> str:
         if model.startswith("ollama/"):
@@ -92,8 +163,10 @@ class LLMAsJudgeMetric(NLPMetric):
         references: EvaluationReferenceInstance,
         **kwargs,
     ) -> MetricResult:
+        # make sure to flatten
         predictions, references = self._flatten_references(predictions, references)
-        logger.debug(f"Evaluating for {len(predictions)} predictions.")
+        if self.debug:
+            logger.debug(f"Evaluating for {len(predictions)} predictions.")
         generator = outlines.generate.choice(self.model, ["0", "1"])
         res = []
         individual_scores = []

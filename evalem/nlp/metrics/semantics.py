@@ -50,7 +50,7 @@ class BertScore(JuryBasedMetric, SemanticMetric):
     Usage:
         .. code-block: python
 
-            from evalem.metrics import BertScore
+            from evalem.nlp import BertScore
 
             references = [
                 "Reference 1",
@@ -185,7 +185,7 @@ class BleuMetric(JuryBasedMetric, SemanticMetric):
 
         .. code-block: python
 
-            from evalem.metrics import BleuMetric
+            from evalem.nlp import BleuMetric
 
             metric = BleuMetric()
             results = metric(predictions=predictions, references=references)
@@ -213,7 +213,7 @@ class MeteorMetric(JuryBasedMetric, SemanticMetric):
 
         .. code-block: python
 
-            from evalem.metrics import MeteorMetric
+            from evalem.nlp import MeteorMetric
 
             metric = MeteorMetric()
             results = metric(predictions=predictions, references=references)
@@ -236,7 +236,7 @@ class RougeMetric(JuryBasedMetric, SemanticMetric):
 
         .. code-block: python
 
-            from evalem.metrics import RougeMetric
+            from evalem.nlp import RougeMetric
 
             metric = RougeMetric()
             results = metric(predictions=predictions, references=references)
