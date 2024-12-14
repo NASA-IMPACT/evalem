@@ -153,8 +153,8 @@ class LLMAsJudgeMetric(NLPMetric):
             url = urljoin(url, "v1")
         return url
 
-    @staticmethod
-    def _flatten_references(
+    def _flatten_instances(
+        self,
         predictions,
         references,
         max_n: Optional[int] = None,
@@ -164,13 +164,11 @@ class LLMAsJudgeMetric(NLPMetric):
         res = []
         for preds, refs in zip(predictions, references):
             # multiple predictions, single reference
-            if isinstance(preds, SequenceType) and isinstance(refs, str):
+            if self._is_multi_prediction_single_reference(preds, refs):
                 res.extend(list(map(lambda p: (p, refs), preds[slice(max_n)])))
-
             # single prediction, multiple references
-            elif isinstance(preds, str) and isinstance(refs, SequenceType):
+            elif self._is_single_prediction_multi_reference(preds, refs):
                 res.extend(list(map(lambda r: (preds, r), refs[slice(max_n)])))
-
             # single prediction, single reference
             else:
                 res.append((preds, refs))
@@ -185,7 +183,7 @@ class LLMAsJudgeMetric(NLPMetric):
         **kwargs,
     ) -> MetricResult:
         # make sure to flatten
-        predictions, references = self._flatten_references(
+        predictions, references = self._flatten_instances(
             predictions,
             references,
             max_n=self.max_n,

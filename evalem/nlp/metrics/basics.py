@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import dataclasses
+from typing import Tuple
 
 from ..._base.metrics import JuryBasedMetric
 from ..._base.structures import (
+    EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricResult,
     SinglePredictionInstance,
@@ -15,6 +17,13 @@ class ExactMatchMetric(JuryBasedMetric, NLPMetric):
     def __init__(self) -> None:
         super().__init__(metrics="exact_match")
 
+    def _flatten_multi_prediction_multi_reference(
+        self,
+        predictions: EvaluationPredictionInstance,
+        references: EvaluationReferenceInstance,
+    ) -> Tuple[EvaluationPredictionInstance, EvaluationReferenceInstance]:
+        raise NotImplementedError()
+
     def compute(
         self,
         predictions: SinglePredictionInstance,
@@ -24,7 +33,7 @@ class ExactMatchMetric(JuryBasedMetric, NLPMetric):
         # This metric doesn't support multi-reference format.
         # So, we flatten everything:
         # Single Prediction, Multi-Ref -> Single Prediction, Single-Ref
-        predictions, references = self._flatten_references(predictions, references)
+        predictions, references = self._flatten_instances(predictions, references)
         result = super().compute(
             predictions=predictions,
             references=references,
