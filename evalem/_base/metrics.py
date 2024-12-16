@@ -14,8 +14,12 @@ from .structures import (
     EvaluationPredictionInstance,
     EvaluationReferenceInstance,
     MetricResult,
+    MultiplePredictionInstance,
+    MultipleReferenceInstance,
+    PredictionInstance,
     SequenceType,
     SinglePredictionInstance,
+    SingleReferenceInstance,
 )
 
 
@@ -105,7 +109,64 @@ class Metric(AbstractBase):
         )
 
     @staticmethod
-    def _flatten_references(
+    def _is_single_prediction_multi_reference(predictions, references) -> bool:
+        return isinstance(predictions, PredictionInstance) and isinstance(
+            references,
+            SequenceType,
+        )
+
+    @staticmethod
+    def _is_multi_prediction_single_reference(predictions, references) -> bool:
+        return isinstance(predictions, SequenceType) and isinstance(
+            references,
+            PredictionInstance,
+        )
+
+    @staticmethod
+    def _is_multi_prediction_multi_reference(predictions, references) -> bool:
+        return isinstance(predictions, SequenceType) and isinstance(
+            references,
+            SequenceType,
+        )
+
+    def _flatten_single_prediction_multi_reference(
+        self,
+        predictions: SinglePredictionInstance,
+        references: MultipleReferenceInstance,
+    ) -> Tuple[SinglePredictionInstance, SingleReferenceInstance]:
+        res = []
+        for preds, refs in zip(predictions, references):
+            if Metric._is_single_prediction_multi_reference(preds, refs):
+                res.extend(list(map(lambda r: (preds, r), refs)))
+            else:
+                res.append((preds, refs))
+        predictions, references = zip(*res)
+        return predictions, references
+
+    def _flatten_multi_prediction_single_reference(
+        self,
+        predictions: MultipleReferenceInstance,
+        references: SingleReferenceInstance,
+    ) -> Tuple[SinglePredictionInstance, SingleReferenceInstance]:
+        res = []
+        for preds, refs in zip(predictions, references):
+            if Metric._is_multi_prediction_single_reference(preds, refs):
+                res.extend(list(map(lambda p: (p, refs), preds)))
+            else:
+                res.append((preds, refs))
+        predictions, references = zip(*res)
+        return predictions, references
+
+    def _flatten_multi_prediction_multi_reference(
+        self,
+        predictions: MultipleReferenceInstance,
+        references: SingleReferenceInstance,
+    ) -> Tuple[SinglePredictionInstance, SingleReferenceInstance]:
+        # No-op
+        return predictions, references
+
+    def _flatten_instances(
+        self,
         predictions: EvaluationPredictionInstance,
         references: EvaluationReferenceInstance,
     ) -> Tuple[EvaluationPredictionInstance, EvaluationReferenceInstance]:
@@ -124,17 +185,14 @@ class Metric(AbstractBase):
         Returns:
             Tuple of flattened lists (predictions, references)
         """
-        res = []
-        for pred, ref in zip(predictions, references):
-            # if multiple predictions, skip for now
-            if isinstance(pred, SequenceType) and not isinstance(pred, str):
-                raise TypeError("Cannot handle multiple prediction instance")
-            # if multiple references
-            elif isinstance(ref, SequenceType) and not isinstance(ref, str):
-                res.extend(list(map(lambda r: (pred, r), ref)))
-            else:
-                res.append((pred, ref))
-        predictions, references = zip(*res)
+        predictions, references = self._flatten_multi_prediction_single_reference(
+            predictions,
+            references,
+        )
+        predictions, references = self._flatten_single_prediction_multi_reference(
+            predictions,
+            references,
+        )
         return predictions, references
 
 
@@ -266,7 +324,7 @@ class ConfusionMatrix(BasicMetric):
             references,
         )
 
-        predictions, references = self._flatten_references(predictions, references)
+        predictions, references = self._flatten_instances(predictions, references)
 
         labels = self.__get_labels(predictions, references)
         return MetricResult.from_dict(

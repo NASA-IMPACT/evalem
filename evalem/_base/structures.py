@@ -84,14 +84,14 @@ ImageTensor = Union[np.ndarray, torch.Tensor]
 # Represents type instance for any single downstream prediction
 PredictionInstance = Union[
     str,
-    Type[PredictionDTO],
+    PredictionDTO,
     dict,
     ImageTensor,
-    Type[ClassificationDTO],
+    ClassificationDTO,
 ]
 
 # Represents type instance for any single downstream reference/ground-truth
-ReferenceInstance = Union[str, Type[ReferenceDTO]]
+ReferenceInstance = Union[str, ReferenceDTO]
 
 SinglePredictionInstance = List[PredictionInstance]
 MultiplePredictionInstance = List[List[PredictionInstance]]

@@ -54,6 +54,15 @@ class LLMAsJudgeMetric(NLPMetric):
         ```aggregation_type```: ```Optional[AggregationType]```
             Decides how to aggregate scores from the multiple judgement tries.
             Defaults to `AggregationType.MEAN` if not provided.
+        ```max_n```: ```Optional[int]```
+            If set, the total number of references or predictions per item.
+            This is to reduce LLM calls and thus minimizing scoring time.
+            Default behaviour is no truncation when set to `None` or less than 1.
+            will be truncated.
+            - If single reference, multiple predictions, total number of prediction will
+            be truncated
+            - If multiple reference, single prediction, total number of
+            reference will be truncated
         ```debug```:```bool```
             Boolean flag for debug-mode outputs
 
@@ -103,21 +112,29 @@ class LLMAsJudgeMetric(NLPMetric):
         temperature: float = 0.0,
         prompt: Optional[str] = None,
         aggregation_type: Optional[List[AggregationType]] = None,
+        max_n: Optional[int] = None,
         debug: bool = False,
     ) -> None:
         super().__init__(debug=debug)
+
+        model = self.__clean_model(model)
+        api_base = self.__clean_url(api_base)
         self.model = outlines.models.openai(
-            self.__clean_model(model),
+            model,
             base_url=api_base,
             api_key=api_key,
             config=OpenAIConfig(temperature=temperature),
         )
-        self.api_base = self.__clean_url(api_base)
+        self.api_base = api_base
         self.n_tries = n_tries or 1
         self.prompt = prompt or LLMAsJudgeMetric._prompt
         self.aggregation_type = aggregation_type or AggregationType.MEAN
-
         self._sanity_check_prmopt(self.prompt)
+        self.max_n = max_n or None
+        if self.max_n:
+            logger.warning(
+                f"Total number of predictions/references per item will be truncated based on `max_n` value.",
+            )
 
     def _sanity_check_prmopt(self, prompt: str) -> bool:
         if "{prediction}" not in prompt or "{reference}" not in prompt:
@@ -133,24 +150,25 @@ class LLMAsJudgeMetric(NLPMetric):
 
     def __clean_url(self, url: str) -> str:
         if not url.endswith("/v1"):
-            url = urljoin(url, "/v1")
+            url = urljoin(url, "v1")
         return url
 
-    @staticmethod
-    def _flatten_references(
+    def _flatten_instances(
+        self,
         predictions,
         references,
+        max_n: Optional[int] = None,
     ) -> Tuple[EvaluationPredictionInstance, EvaluationReferenceInstance]:
+        if max_n is not None and max_n < 1:
+            max_n = None
         res = []
         for preds, refs in zip(predictions, references):
             # multiple predictions, single reference
-            if isinstance(preds, SequenceType) and isinstance(refs, str):
-                res.extend(list(map(lambda p: (p, refs), preds)))
-
+            if self._is_multi_prediction_single_reference(preds, refs):
+                res.extend(list(map(lambda p: (p, refs), preds[slice(max_n)])))
             # single prediction, multiple references
-            elif isinstance(preds, str) and isinstance(refs, SequenceType):
-                res.extend(list(map(lambda r: (preds, r), refs)))
-
+            elif self._is_single_prediction_multi_reference(preds, refs):
+                res.extend(list(map(lambda r: (preds, r), refs[slice(max_n)])))
             # single prediction, single reference
             else:
                 res.append((preds, refs))
@@ -165,7 +183,11 @@ class LLMAsJudgeMetric(NLPMetric):
         **kwargs,
     ) -> MetricResult:
         # make sure to flatten
-        predictions, references = self._flatten_references(predictions, references)
+        predictions, references = self._flatten_instances(
+            predictions,
+            references,
+            max_n=self.max_n,
+        )
         if self.debug:
             logger.debug(f"Evaluating for {len(predictions)} predictions.")
         generator = outlines.generate.choice(self.model, ["0", "1"])
